@@ -1,0 +1,41 @@
+.count {
+  font-size: var(--fs-cell);
+  font-weight: var(--fw-semibold);
+  color: var(--text-muted);
+}
+
+.toolbar {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-3);
+  flex-wrap: wrap;
+}
+
+.cover {
+  width: 36px;
+  height: 36px;
+  border-radius: var(--r-sm);
+  object-fit: cover;
+  display: block;
+}
+
+.title {
+  font-size: 13.5px;
+  font-weight: var(--fw-bold);
+  color: var(--text);
+}
+
+.muted {
+  color: var(--text-muted);
+}
+
+.plays {
+  font-weight: var(--fw-bold);
+  color: var(--text);
+}
+
+.actions {
+  display: inline-flex;
+  color: var(--text-faint);
+  cursor: pointer;
+}

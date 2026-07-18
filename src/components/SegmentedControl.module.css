@@ -1,0 +1,26 @@
+.wrap {
+  display: inline-flex;
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: var(--r-thumb);
+  padding: 3px;
+}
+
+.segment {
+  border: none;
+  background: transparent;
+  border-radius: 9px;
+  padding: 6px 16px;
+  font-size: 12.5px;
+  font-weight: var(--fw-semibold);
+  color: var(--text-muted);
+  transition:
+    background 0.15s ease,
+    color 0.15s ease;
+}
+
+.active {
+  background: var(--primary);
+  color: var(--primary-contrast);
+  font-weight: var(--fw-black);
+}

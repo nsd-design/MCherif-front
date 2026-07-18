@@ -1,0 +1,75 @@
+.scroll {
+  width: 100%;
+  overflow-x: auto;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--r-card);
+}
+
+.table {
+  width: 100%;
+  border-collapse: collapse;
+  table-layout: fixed;
+}
+
+.th {
+  text-align: left;
+  background: var(--surface-alt);
+  padding: 0;
+}
+
+.thBtn {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  background: transparent;
+  border: none;
+  width: 100%;
+  padding: 12px 20px;
+  font-size: var(--fs-badge);
+  font-weight: var(--fw-bold);
+  color: var(--text-muted);
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  text-align: left;
+}
+
+.sortable {
+  cursor: pointer;
+}
+
+.asc {
+  transform: rotate(180deg);
+}
+
+.desc {
+  transform: rotate(0deg);
+}
+
+.tr {
+  border-top: 1px solid var(--divider);
+}
+
+.clickable {
+  cursor: pointer;
+}
+
+.tr:hover {
+  background: var(--row-hover);
+}
+
+.highlighted {
+  background: var(--row-hover);
+}
+
+.td {
+  padding: 10px 20px;
+  height: 48px;
+  box-sizing: border-box;
+  font-size: var(--fs-cell);
+  color: var(--text);
+  vertical-align: middle;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}

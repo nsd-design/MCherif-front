@@ -1,0 +1,137 @@
+/*
+ * Design system Mohamed Chérif — back-office web.
+ * Source unique des couleurs brutes. Aucune autre couleur en dur ailleurs.
+ * Thème clair par défaut (:root) + thème sombre ([data-theme="dark"]).
+ */
+
+:root {
+  /* Surfaces & texte */
+  --bg: #f6f5f2;
+  --surface: #ffffff;
+  --surface-alt: #fbfaf8; /* fond d'en-tête de table */
+  --border: #e7e5e0;
+  --divider: #eceae4;
+  --text: #17201b;
+  --text-muted: #6b7570;
+  --text-faint: #9aa39d;
+
+  /* Accent unique : le vert */
+  --primary: #0e7a45;
+  --primary-deep: #0b5c36;
+  --primary-soft: #e4f1e9;
+  --primary-contrast: #ffffff; /* texte sur fond primary */
+
+  --danger: #b23a3a;
+  --danger-soft: #f7e5e5;
+  --danger-border: #ead2d2;
+
+  /* Teintes de statut (pilules) */
+  --st-success-bg: #e4f1e9;
+  --st-success-tx: #0e7a45;
+  --st-warn-bg: #f6ebd9;
+  --st-warn-tx: #a96b1f;
+  --st-muted-bg: #efede8;
+  --st-muted-tx: #6b7570;
+  --st-danger-bg: #f7e5e5;
+  --st-danger-tx: #b23a3a;
+
+  /* Interactions de table */
+  --row-hover: #f4f8f5;
+
+  /* Survol / voile / champs */
+  --overlay: rgba(23, 32, 27, 0.32);
+  --field-ring: #c9ccc7; /* anneau neutre inactif */
+  --input-bg: #ffffff;
+
+  /* Bulle de notification mobile — volontairement sombre dans les 2 thèmes */
+  --notif-bg: #17201b;
+  --notif-text: #ffffff;
+  --notif-muted: #9aa79f;
+
+  /* Rayons */
+  --r-field: 14px;
+  --r-card: 16px;
+  --r-panel: 18px;
+  --r-thumb: 12px;
+  --r-pill: 999px;
+  --r-sm: 10px;
+
+  /* Espacements (grille de 4) */
+  --sp-1: 4px;
+  --sp-2: 8px;
+  --sp-3: 12px;
+  --sp-4: 16px;
+  --sp-5: 20px;
+  --sp-6: 24px;
+  --sp-8: 32px;
+  --sp-11: 44px;
+
+  /* Typographie */
+  --font: 'Manrope', system-ui, sans-serif;
+  --fw-regular: 400;
+  --fw-medium: 500;
+  --fw-semibold: 600;
+  --fw-bold: 700;
+  --fw-black: 800;
+
+  --fs-page: 24px;
+  --fs-stat: 26px;
+  --fs-section: 18px;
+  --fs-card-title: 15px;
+  --fs-cta: 15px;
+  --fs-body: 14px;
+  --fs-cell: 13px;
+  --fs-meta: 12px;
+  --fs-badge: 11px;
+
+  /* Ombres */
+  --shadow-cta: 0 10px 24px rgba(14, 122, 69, 0.3);
+  --shadow-cta-sm: 0 8px 20px rgba(14, 122, 69, 0.25);
+  --shadow-float: 0 16px 40px rgba(23, 32, 27, 0.18);
+  --shadow-menu: 0 12px 28px rgba(23, 32, 27, 0.14);
+
+  /* Dimensions de layout */
+  --sidebar-w: 240px;
+  --topbar-h: 64px;
+  --drawer-w: 400px;
+}
+
+[data-theme='dark'] {
+  --bg: #121714;
+  --surface: #1b221d;
+  --surface-alt: #161c18;
+  --border: #2a332d;
+  --divider: #2a332d;
+  --text: #f2f4f1;
+  --text-muted: #9aa79f;
+  --text-faint: #77817b;
+
+  --primary: #35a46c;
+  --primary-deep: #2a8657;
+  --primary-soft: rgba(53, 164, 108, 0.14);
+  --primary-contrast: #0e1511;
+
+  --danger: #d06a6a;
+  --danger-soft: rgba(208, 106, 106, 0.14);
+  --danger-border: rgba(208, 106, 106, 0.4);
+
+  --st-success-bg: rgba(53, 164, 108, 0.14);
+  --st-success-tx: #35a46c;
+  --st-warn-bg: rgba(214, 154, 69, 0.14);
+  --st-warn-tx: #d69a45;
+  --st-muted-bg: rgba(154, 167, 159, 0.12);
+  --st-muted-tx: #9aa79f;
+  --st-danger-bg: rgba(208, 106, 106, 0.14);
+  --st-danger-tx: #d06a6a;
+
+  --row-hover: rgba(53, 164, 108, 0.08);
+
+  --overlay: rgba(0, 0, 0, 0.5);
+  --field-ring: #3a453e;
+  --input-bg: #1b221d;
+
+  --shadow-cta: 0 10px 24px rgba(0, 0, 0, 0.4);
+  --shadow-cta-sm: 0 8px 20px rgba(0, 0, 0, 0.35);
+  --shadow-float: 0 16px 40px rgba(0, 0, 0, 0.45);
+  --shadow-menu: 0 12px 28px rgba(0, 0, 0, 0.4);
+}

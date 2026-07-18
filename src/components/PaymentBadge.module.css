@@ -1,0 +1,23 @@
+.wrap {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--sp-2);
+}
+
+.chip {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  border-radius: 7px;
+  font-size: 9px;
+  font-weight: var(--fw-black);
+  flex-shrink: 0;
+}
+
+.label {
+  font-size: var(--fs-cell);
+  font-weight: var(--fw-semibold);
+  color: var(--text);
+}

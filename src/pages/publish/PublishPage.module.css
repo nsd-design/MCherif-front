@@ -1,0 +1,157 @@
+.columns {
+  display: grid;
+  grid-template-columns: 1.2fr 1fr;
+  gap: var(--sp-5);
+  align-items: start;
+}
+
+.left {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-5);
+}
+
+.dz {
+  margin-top: var(--sp-3);
+}
+
+.fileCard {
+  border: 1px solid var(--border);
+  border-radius: var(--r-field);
+  margin-top: var(--sp-3);
+  padding: var(--sp-4);
+}
+
+.fileHead {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-3);
+}
+
+.fileIcon {
+  width: 36px;
+  height: 36px;
+  border-radius: var(--r-sm);
+  background: var(--primary-soft);
+  color: var(--primary);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.fileInfo {
+  flex: 1;
+  min-width: 0;
+}
+
+.fileName {
+  font-size: 13.5px;
+  font-weight: var(--fw-bold);
+  color: var(--text);
+}
+
+.fileMeta {
+  font-size: var(--fs-meta);
+  color: var(--text-muted);
+  margin-top: 2px;
+}
+
+.steps {
+  margin-top: 18px;
+}
+
+.progressMeta {
+  display: flex;
+  justify-content: space-between;
+  font-size: var(--fs-meta);
+  color: var(--text-muted);
+  margin-top: var(--sp-2);
+}
+
+.progressPct {
+  font-weight: var(--fw-bold);
+  color: var(--text);
+}
+
+.accessCard {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-4);
+}
+
+.optionRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--sp-4);
+}
+
+.optionBorder {
+  border-top: 1px solid var(--divider);
+  padding-top: var(--sp-4);
+}
+
+.optionTitle {
+  font-size: var(--fs-body);
+  font-weight: var(--fw-bold);
+  color: var(--text);
+}
+
+.optionSub {
+  font-size: var(--fs-meta);
+  color: var(--text-muted);
+  margin-top: 2px;
+}
+
+.infoCard {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-4);
+  min-width: 0;
+}
+
+.pair {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--sp-3);
+}
+
+.coverLabel {
+  font-size: var(--fs-meta);
+  font-weight: var(--fw-bold);
+  color: var(--text);
+  margin-bottom: 6px;
+}
+
+.coverCard {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-3);
+  border: 1px solid var(--border);
+  border-radius: var(--r-field);
+  padding: 12px 14px;
+}
+
+.coverImg {
+  width: 44px;
+  height: 44px;
+  border-radius: var(--r-sm);
+  object-fit: cover;
+}
+
+.coverInfo {
+  flex: 1;
+  min-width: 0;
+}
+
+.coverTitle {
+  font-size: var(--fs-cell);
+  font-weight: var(--fw-bold);
+  color: var(--text);
+}
+
+.coverSub {
+  font-size: var(--fs-meta);
+  color: var(--text-muted);
+}

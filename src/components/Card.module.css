@@ -1,0 +1,18 @@
+.card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--r-card);
+  padding: var(--sp-5);
+  box-sizing: border-box;
+}
+
+.flush {
+  padding: 0;
+  overflow: hidden;
+}
+
+.title {
+  font-size: var(--fs-card-title);
+  font-weight: var(--fw-black);
+  color: var(--text);
+}

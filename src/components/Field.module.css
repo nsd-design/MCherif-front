@@ -1,0 +1,69 @@
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.label {
+  font-size: var(--fs-meta);
+  font-weight: var(--fw-bold);
+  color: var(--text);
+}
+
+.control {
+  width: 100%;
+  background: var(--input-bg);
+  border: 1px solid var(--border);
+  border-radius: var(--r-field);
+  padding: 11px 14px;
+  font-size: var(--fs-body);
+  font-weight: var(--fw-semibold);
+  color: var(--text);
+  transition: border-color 0.15s ease;
+}
+
+.control::placeholder {
+  color: var(--text-faint);
+  font-weight: var(--fw-medium);
+}
+
+.control:focus {
+  outline: none;
+  border-color: var(--primary);
+  border-width: 1.5px;
+  padding: 10.5px 13.5px;
+}
+
+.textarea {
+  resize: vertical;
+  min-height: 74px;
+  line-height: 1.5;
+}
+
+.selectWrap {
+  position: relative;
+}
+
+.selectWrap select {
+  appearance: none;
+  cursor: pointer;
+}
+
+.selectIcon {
+  position: absolute;
+  right: 14px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--text-muted);
+  pointer-events: none;
+}
+
+.error {
+  border-color: var(--danger);
+}
+
+.errorText {
+  font-size: var(--fs-meta);
+  color: var(--danger);
+  font-weight: var(--fw-semibold);
+}

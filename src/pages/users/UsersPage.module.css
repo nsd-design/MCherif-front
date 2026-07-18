@@ -1,0 +1,36 @@
+.count {
+  font-size: var(--fs-cell);
+  font-weight: var(--fw-semibold);
+  color: var(--text-muted);
+}
+
+.user {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--sp-2);
+  min-width: 0;
+}
+
+.userName {
+  font-size: 13.5px;
+  font-weight: var(--fw-bold);
+  color: var(--text);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.muted {
+  color: var(--text-muted);
+}
+
+.devices {
+  font-weight: var(--fw-bold);
+  color: var(--text);
+}
+
+.actions {
+  display: inline-flex;
+  color: var(--text-faint);
+  cursor: pointer;
+}

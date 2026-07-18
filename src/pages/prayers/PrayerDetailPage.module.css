@@ -1,0 +1,147 @@
+.crumb {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--sp-2);
+  font-size: var(--fs-body);
+  font-weight: var(--fw-medium);
+}
+
+.crumbRoot {
+  color: var(--text-muted);
+  font-weight: var(--fw-semibold);
+}
+
+.sep {
+  color: var(--field-ring);
+}
+
+.crumbCurrent {
+  color: var(--text);
+  font-weight: var(--fw-black);
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-4);
+}
+
+.cover {
+  width: 64px;
+  height: 64px;
+  border-radius: var(--r-field);
+  object-fit: cover;
+}
+
+.headerInfo {
+  flex: 1;
+  min-width: 0;
+}
+
+.headerTitle {
+  font-size: var(--fs-page);
+  font-weight: var(--fw-black);
+  color: var(--text);
+}
+
+.headerMeta {
+  font-size: var(--fs-cell);
+  color: var(--text-muted);
+  margin-top: 4px;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: 1.3fr 1fr;
+  gap: var(--sp-5);
+  align-items: start;
+}
+
+.metaCard {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-4);
+}
+
+.triple {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: var(--sp-3);
+}
+
+.metaActions {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.side {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-5);
+}
+
+.drmHead {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.drmList {
+  margin: var(--sp-2) 0 0;
+}
+
+.drmRow {
+  display: flex;
+  justify-content: space-between;
+  padding: 10px 0;
+  border-bottom: 1px solid var(--divider);
+}
+
+.drmRow:last-child {
+  border-bottom: none;
+}
+
+.drmRow dt {
+  font-size: var(--fs-cell);
+  color: var(--text-muted);
+}
+
+.drmRow dd {
+  margin: 0;
+  font-size: var(--fs-cell);
+  font-weight: var(--fw-bold);
+  color: var(--text);
+}
+
+.statGrid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--sp-4);
+  margin-top: var(--sp-4);
+}
+
+.statTile {
+  background: var(--bg);
+  border-radius: var(--r-field);
+  padding: var(--sp-4);
+}
+
+.statLabel {
+  font-size: var(--fs-badge);
+  font-weight: var(--fw-bold);
+  color: var(--text-muted);
+  letter-spacing: 0.04em;
+}
+
+.statValue {
+  font-size: var(--fs-page);
+  font-weight: var(--fw-black);
+  color: var(--text);
+  margin-top: 4px;
+}
+
+.statNote {
+  font-size: var(--fs-meta);
+  color: var(--text-muted);
+  margin-top: var(--sp-3);
+}

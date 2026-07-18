@@ -1,0 +1,123 @@
+.stats {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: var(--sp-4);
+}
+
+.mt {
+  margin-top: var(--sp-2);
+}
+
+.row {
+  display: grid;
+  grid-template-columns: 2fr 1fr;
+  gap: var(--sp-4);
+}
+
+.chartCard,
+.encodingCard {
+  min-width: 0;
+}
+
+.chartHead {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: var(--sp-3);
+}
+
+.pill {
+  font-size: var(--fs-meta);
+  font-weight: var(--fw-bold);
+  color: var(--text-muted);
+  border: 1px solid var(--border);
+  border-radius: var(--r-pill);
+  padding: 5px 12px;
+}
+
+.jobs {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-5);
+  margin-top: var(--sp-4);
+}
+
+.job {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.jobHead {
+  display: flex;
+  justify-content: space-between;
+  font-size: var(--fs-cell);
+}
+
+.jobTitle {
+  font-weight: var(--fw-bold);
+  color: var(--text);
+}
+
+.jobPct {
+  color: var(--text-muted);
+}
+
+.jobStep {
+  font-size: var(--fs-meta);
+  color: var(--st-warn-tx);
+  font-weight: var(--fw-bold);
+}
+
+.empty {
+  font-size: var(--fs-cell);
+  color: var(--text-muted);
+  padding: var(--sp-4) 0;
+}
+
+.activity {
+  margin-top: var(--sp-3);
+}
+
+.activityRow {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-3);
+  padding: 11px 0;
+  border-top: 1px solid var(--divider);
+}
+
+.activityRow:first-child {
+  border-top: none;
+}
+
+.dot {
+  width: 8px;
+  height: 8px;
+  border-radius: var(--r-pill);
+  flex-shrink: 0;
+}
+
+.success {
+  background: var(--primary);
+}
+
+.neutral {
+  background: var(--text-faint);
+}
+
+.danger {
+  background: var(--danger);
+}
+
+.activityText {
+  flex: 1;
+  font-size: 13.5px;
+  color: var(--text);
+  font-weight: var(--fw-semibold);
+}
+
+.activityMeta {
+  font-size: var(--fs-meta);
+  color: var(--text-faint);
+}

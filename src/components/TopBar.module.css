@@ -1,0 +1,19 @@
+.bar {
+  height: var(--topbar-h);
+  flex-shrink: 0;
+  box-sizing: border-box;
+  display: flex;
+  align-items: center;
+  gap: var(--sp-4);
+  padding: 0 var(--sp-8);
+  background: var(--surface);
+  border-bottom: 1px solid var(--border);
+}
+
+.title {
+  font-size: var(--fs-section);
+  font-weight: var(--fw-black);
+  color: var(--text);
+  flex: 1;
+  min-width: 0;
+}

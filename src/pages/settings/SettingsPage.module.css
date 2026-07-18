@@ -1,0 +1,165 @@
+.grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--sp-5);
+  align-content: start;
+}
+
+.cardHead,
+.drmHead {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.smallBtn {
+  padding: 7px 12px;
+  font-size: 12.5px;
+  font-weight: var(--fw-bold);
+  box-shadow: none;
+}
+
+.plans {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-3);
+  margin-top: var(--sp-4);
+}
+
+.plan {
+  position: relative;
+  border: 1px solid var(--border);
+  border-radius: var(--r-field);
+  padding: 14px 16px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.planFeatured {
+  border: 1.5px solid var(--primary);
+}
+
+.planBadge {
+  position: absolute;
+  top: -9px;
+  left: 14px;
+  background: var(--primary);
+  color: var(--primary-contrast);
+  font-size: 10.5px;
+  font-weight: var(--fw-black);
+  border-radius: var(--r-pill);
+  padding: 2px 9px;
+}
+
+.planName {
+  font-size: var(--fs-body);
+  font-weight: var(--fw-bold);
+  color: var(--text);
+}
+
+.planSub {
+  font-size: var(--fs-meta);
+  color: var(--text-muted);
+  margin-top: 2px;
+}
+
+.planPrice {
+  font-size: var(--fs-card-title);
+  font-weight: var(--fw-black);
+  color: var(--text);
+}
+
+.planPeriod {
+  font-size: var(--fs-meta);
+  font-weight: var(--fw-semibold);
+  color: var(--text-muted);
+}
+
+.readonly {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: var(--fs-badge);
+  font-weight: var(--fw-bold);
+  color: var(--text-faint);
+  letter-spacing: 0.04em;
+}
+
+.drmList {
+  margin: var(--sp-2) 0 0;
+}
+
+.drmRow {
+  display: flex;
+  justify-content: space-between;
+  padding: 10px 0;
+  border-bottom: 1px solid var(--divider);
+}
+
+.drmRow:last-child {
+  border-bottom: none;
+}
+
+.drmRow dt {
+  font-size: var(--fs-cell);
+  color: var(--text-muted);
+}
+
+.drmRow dd {
+  margin: 0;
+  font-size: var(--fs-cell);
+  font-weight: var(--fw-bold);
+  color: var(--text);
+}
+
+.admins {
+  margin-top: var(--sp-2);
+}
+
+.admin {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-3);
+  padding: 11px 0;
+  border-top: 1px solid var(--divider);
+}
+
+.admin:first-child {
+  border-top: none;
+}
+
+.adminInfo {
+  flex: 1;
+  min-width: 0;
+}
+
+.adminName {
+  font-size: 13.5px;
+  font-weight: var(--fw-bold);
+  color: var(--text);
+}
+
+.adminEmail {
+  font-size: var(--fs-meta);
+  color: var(--text-muted);
+}
+
+.themeRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: var(--sp-4);
+}
+
+.themeTitle {
+  font-size: var(--fs-body);
+  font-weight: var(--fw-bold);
+  color: var(--text);
+}
+
+.themeSub {
+  font-size: var(--fs-meta);
+  color: var(--text-muted);
+  margin-top: 2px;
+}

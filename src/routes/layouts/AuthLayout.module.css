@@ -1,0 +1,9 @@
+.shell {
+  min-height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--bg);
+  padding: var(--sp-6);
+  box-sizing: border-box;
+}

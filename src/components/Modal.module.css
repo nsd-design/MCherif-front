@@ -1,0 +1,39 @@
+.overlay {
+  position: fixed;
+  inset: 0;
+  background: var(--overlay);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--sp-6);
+  z-index: 50;
+}
+
+.dialog {
+  width: 420px;
+  max-width: 100%;
+  background: var(--surface);
+  border-radius: var(--r-panel);
+  box-shadow: var(--shadow-menu);
+  padding: var(--sp-6);
+}
+
+.title {
+  font-size: var(--fs-section);
+  font-weight: var(--fw-black);
+  color: var(--text);
+}
+
+.description {
+  font-size: var(--fs-cell);
+  color: var(--text-muted);
+  line-height: 1.5;
+  margin-top: var(--sp-2);
+}
+
+.actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: var(--sp-3);
+  margin-top: var(--sp-6);
+}

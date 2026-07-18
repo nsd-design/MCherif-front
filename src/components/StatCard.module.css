@@ -1,0 +1,35 @@
+.card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--r-card);
+  padding: var(--sp-5);
+}
+
+.label {
+  font-size: var(--fs-badge);
+  font-weight: var(--fw-bold);
+  color: var(--text-muted);
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.value {
+  font-size: var(--fs-stat);
+  font-weight: var(--fw-black);
+  color: var(--text);
+  margin-top: var(--sp-2);
+}
+
+.change {
+  font-size: var(--fs-meta);
+  font-weight: var(--fw-bold);
+  margin-top: 6px;
+}
+
+.positive {
+  color: var(--primary);
+}
+
+.neutral {
+  color: var(--text-muted);
+}

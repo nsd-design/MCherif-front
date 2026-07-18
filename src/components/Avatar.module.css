@@ -1,0 +1,18 @@
+.avatar {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: var(--r-pill);
+  font-weight: var(--fw-black);
+  flex-shrink: 0;
+}
+
+.solid {
+  background: var(--primary);
+  color: var(--primary-contrast);
+}
+
+.soft {
+  background: var(--primary-soft);
+  color: var(--primary);
+}
