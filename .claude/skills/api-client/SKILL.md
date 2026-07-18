@@ -8,7 +8,7 @@ description: Met en place et utilise le client API typé du back-office React/TS
 Le front ne parle à l'API **que** via un client typé généré depuis l'OpenAPI. On n'invente jamais d'URL ni de type.
 
 ## Génération des types
-- Source : la spec OpenAPI du backend (`/v3/api-docs`). Générer avec **openapi-typescript** vers `src/api/schema.d.ts` (script `npm run gen:api`).
+- Source : la spec OpenAPI du backend (`/v3/api-docs`). Générer avec **openapi-typescript** vers `src/api/schema.d.ts` (script `pnpm run gen:api`).
 - Utiliser **openapi-fetch** (client typé léger) créé dans `src/api/client.ts` avec `baseUrl = import.meta.env.VITE_API_BASE_URL`.
 - **Ne jamais réécrire à la main** les types d'entités : les importer depuis le schéma généré. Si un endpoint manque, le signaler — ne pas le créer côté front.
 
