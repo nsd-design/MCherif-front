@@ -1,7 +1,39 @@
-# CLAUDE.md — Back-office Mohamed Chérif (Front React / TypeScript)
+# CLAUDE.md
 
-> Fichier de contexte pour l'agent de code. À lire en entier avant toute implémentation.
-> Ce repo est **le frontend web du back-office d'administration**. Il consomme l'**API REST admin** (repo Spring Boot séparé). Sources : maquettes `Back-office Admin.dc.html`, `DESIGN-SYSTEM.md`, et la spec OpenAPI de l'API (`/v3/api-docs`).
+This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
+
+> **Back-office Mohamed Chérif — frontend web d'administration (React / TypeScript).** Ce repo consomme l'API REST admin (repo Spring Boot séparé). Sources design : maquettes `Back-office Admin.dc.html`, `DESIGN-SYSTEM.md`, spec OpenAPI (`/v3/api-docs`).
+>
+> Les sections §1–§12 sont le **cahier des charges design** (la cible). Lire **§0 d'abord** : il décrit la réalité du code implémenté, qui diverge de la cible sur un point majeur (couche de données mock, pas encore d'OpenAPI).
+
+## 0. État d'implémentation (as-built) — à lire en premier
+
+Les 9 écrans sont **entièrement implémentés**, en thème clair **et** sombre. Ce qui suit est l'architecture réelle ; elle prime sur la cible §1–§12 en cas d'écart.
+
+**Écart majeur — couche de données mock.** Le backend Spring Boot et sa spec OpenAPI **n'existent pas encore**. Donc, contrairement à §2/§3/§7 :
+- Les types du domaine sont **écrits à la main** dans `src/types/index.ts` (provisoires), pas générés. `pnpm gen:api` est un **placeholder** (échoue tant qu'il n'y a pas de `/v3/api-docs`).
+- Les données viennent de `src/api/mock/data.ts` (reprises fidèlement des maquettes), servies avec délai simulé par `src/api/mock/index.ts`.
+- Le point de bascule est balisé partout par le marqueur **`// TODO(api):`** — c'est là qu'on remplacera les mocks par les appels `openapi-fetch` et les types générés.
+
+**Gestionnaire de paquets : `pnpm`** (présence de `pnpm-lock.yaml`). **React 19** (le brief dit « 18+ »).
+
+**Câblage (nécessite de lire plusieurs fichiers) :**
+- `src/main.tsx` → `src/app/App.tsx` monte l'ordre des providers : `ThemeProvider` > `QueryClientProvider` (`app/queryClient.ts`) > `RouterProvider` (`app/router.tsx`).
+- `app/router.tsx` : `/connexion` sous `AuthLayout` ; tout le reste sous `ProtectedRoute` (`app/ProtectedRoute.tsx`, redirige si non authentifié) > `AppLayout` (`routes/layouts/`, sidebar + colonne de contenu). Routes en français (`/tableau-de-bord`, `/preches`, `/preches/:id`, `/publication`, `/utilisateurs`, `/abonnements`, `/notifications`, `/parametres`).
+- **Données** : chaque page appelle un hook de `src/api/hooks.ts` (TanStack Query, clés dans `queryKeys`) — **jamais de fetch direct**. `src/api/client.ts` est un wrapper fetch + intercepteur JWT/refresh **prêt mais non branché**.
+- **Auth** : `src/store/auth.ts` (Zustand) simule connexion → 2FA (code à **6 chiffres**), pose l'access token **en mémoire** via `setAccessToken` de `api/client.ts` (jamais localStorage).
+- **Thème** : `theme/tokens.css` définit toutes les couleurs en variables CSS (`:root` clair + `[data-theme="dark"]`). `theme/tokens.ts` est le **miroir JS** des couleurs (seul `.ts` autorisé à contenir des hex) pour les consommateurs qui exigent une chaîne (Recharts, pastilles de paiement). `ThemeProvider` pose `data-theme` sur `<html>` et **persiste le thème en localStorage** (le thème n'est pas sensible ; les jetons, si).
+
+**Garde-fous « aucune couleur en dur » (bloquants au lint) :**
+- ESLint `no-restricted-syntax` interdit les littéraux hex dans les `.tsx` (exception : `src/theme/tokens.ts`).
+- Stylelint `color-no-hex` interdit les hex dans les `*.module.css` (exception : `src/theme/tokens.css`).
+- La bulle d'aperçu de notification est volontairement sombre dans les deux thèmes → tokens dédiés `--notif-*`.
+
+**Patron d'une page** : `<TopBar title=… actions=… />` puis `<PageBody>` (zone défilable, padding 32) ; données via un hook `api/`, états de chargement en `<Skeleton>` / `<SkeletonRows>` (jamais de spinner). Le styling est en **CSS Modules** co-localisés (`X.tsx` + `X.module.css`).
+
+**Structure réelle notable** (au-delà de §4) : `src/store/` (auth Zustand), `src/routes/layouts/` (AppLayout/AuthLayout), `src/api/mock/` + `src/api/hooks.ts` + `src/api/client.ts`. Composants transverses clés : `DataTable` (TanStack Table), `StatusBadge` (badges typés par domaine), `SegmentedControl`, `Dropzone` + `ProgressSteps`, `Drawer`, `ConfirmModal`, `RevenueChart` (Recharts, couleurs depuis `tokens.ts` selon le thème courant).
+
+**Commandes** (vérifiées) : `pnpm dev` · `pnpm build` (`tsc -b && vite build`) · `pnpm typecheck` (`tsc --noEmit -p tsconfig.app.json`) · `pnpm lint` (ESLint **+** stylelint des `.module.css`). `pnpm test` (Vitest) est déclaré mais **aucun test n'est encore écrit**. `tsconfig.app.json` active `noUnusedLocals`/`noUnusedParameters` — pas d'import ni de variable inutilisés.
 
 ## 1. Mission
 
@@ -89,32 +121,41 @@ Connexion (email + mot de passe + **code 2FA**) · Tableau de bord (4 stats + co
 - États **chargement/vide/erreur** obligatoires, en **squelettes** (jamais de spinner plein écran).
 - Accessibilité : labels ARIA, focus visible, navigation clavier dans les tables et modales.
 
-## 8. Sécurité (côté client)
+## 8. Contrat de présentation — ce SPA possède tout le texte affiché
+
+**Le backend ne renvoie jamais de phrase FR « prête à afficher ».** Il renvoie des **codes/enums** (`status: "PUBLISHED"`, `method: "ORANGE_MONEY"`, un `errorCode` en cas d'erreur RFC 7807…). C'est **ce frontend** — pas le backend — qui possède l'intégralité du texte affiché : libellés d'interface statiques (déjà en `i18n/`) **et** traduction de ces codes serveur en français.
+
+- Maintenir dans `i18n/` un **dictionnaire code → libellé FR** par domaine (statuts de prêche, statuts d'abonnement, moyens de paiement, `errorCode` d'API) — utilisé par `StatusBadge` et les messages d'erreur.
+- Les erreurs API (RFC 7807) portent un `errorCode` stable ; **ne jamais afficher `detail`** (texte technique de debug) à l'admin — toujours passer par le dictionnaire de traduction, avec un message de repli générique si le code est inconnu.
+- Le **contenu libre** saisi par l'admin ou d'autres admins (titre/description de prêche, titre/message de notification) n'est pas traduit : affiché tel quel.
+- Ce dictionnaire de traduction est le **même besoin** que côté app mobile (repo séparé) : les deux frontends traduisent indépendamment les mêmes codes serveur — pas de partage de code entre repos, mais garder les libellés FR cohérents entre l'app et le back-office.
+
+## 9. Sécurité (côté client)
 
 - **Access token en mémoire uniquement** ; **jamais** dans `localStorage`/`sessionStorage`. Refresh via l'endpoint dédié (idéalement cookie httpOnly).
 - **Routes protégées** : rediriger vers Connexion si non authentifié ; vérifier le rôle `ADMIN`. Le backend reste l'autorité — le contrôle client n'est qu'un confort UX.
 - Ne jamais logger de token ni de donnée sensible. Gérer proprement le 401 (refresh puis retry, sinon déconnexion) et le 403.
 - Respecter le CORS du backend (origine configurée par variable d'environnement `VITE_API_BASE_URL`).
 
-## 9. Commandes
+## 10. Commandes
 
 ```bash
-npm install
-npm run dev            # serveur de dev Vite
-npm run gen:api        # génère les types depuis l'OpenAPI (openapi-typescript)
-npm run lint           # ESLint (dont règle anti-couleur-en-dur)
-npm run typecheck      # tsc --noEmit
-npm run test           # Vitest + Testing Library
-npm run build          # build de production
+pnpm install
+pnpm run dev            # serveur de dev Vite
+pnpm run gen:api        # génère les types depuis l'OpenAPI (openapi-typescript)
+pnpm run lint           # ESLint (dont règle anti-couleur-en-dur)
+pnpm run typecheck      # tsc --noEmit
+pnpm run test           # Vitest + Testing Library
+pnpm run build          # build de production
 ```
 
-## 10. À faire / À éviter
+## 11. À faire / À éviter
 
-**À faire :** dériver tout style des tokens · générer les types depuis l'OpenAPI · gérer chargement/vide/erreur en squelettes · protéger les routes · formater GNF/dates via `lib/` · recréer le rendu des maquettes proprement.
+**À faire :** dériver tout style des tokens · générer les types depuis l'OpenAPI · gérer chargement/vide/erreur en squelettes · protéger les routes · formater GNF/dates via `lib/` · recréer le rendu des maquettes proprement · traduire les codes/enums via `i18n/`.
 
-**À éviter :** une 2e couleur d'accent · texte < 11 px · couleurs en dur · stocker des tokens dans `localStorage` · inventer des endpoints · dupliquer les types de l'API · copier le DOM des prototypes.
+**À éviter :** une 2e couleur d'accent · texte < 11 px · couleurs en dur · stocker des tokens dans `localStorage` · inventer des endpoints · dupliquer les types de l'API · copier le DOM des prototypes · afficher un `detail` d'erreur brut au lieu de l'`errorCode` traduit.
 
-## 11. Index des skills (dans `skills/`, à copier dans `.claude/skills/` du repo)
+## 12. Index des skills (dans `skills/`, à copier dans `.claude/skills/` du repo)
 
 - **design-system** — appliquer tokens, thèmes clair/sombre, Manrope et composants desktop.
 - **api-client** — générer le client typé depuis l'OpenAPI, hooks React Query, intercepteur JWT/refresh.
