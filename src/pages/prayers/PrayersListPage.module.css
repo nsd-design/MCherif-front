@@ -34,6 +34,29 @@
   color: var(--text);
 }
 
+.actions {
+  display: inline-flex;
+  gap: 4px;
+}
+
+.actionBtn {
+  background: transparent;
+  border: none;
+  color: var(--text-faint);
+  display: inline-flex;
+  padding: 4px;
+  border-radius: var(--r-sm);
+  cursor: pointer;
+}
+
+.actionBtn:hover {
+  color: var(--primary);
+}
+
+.actionBtn.danger:hover {
+  color: var(--danger);
+}
+
 .empty {
   padding: var(--sp-8);
   text-align: center;

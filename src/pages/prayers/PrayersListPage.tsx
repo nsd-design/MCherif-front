@@ -1,4 +1,4 @@
-import { useMemo } from 'react'
+import { useMemo, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { type ColumnDef } from '@tanstack/react-table'
 import styles from './PrayersListPage.module.css'
@@ -14,10 +14,14 @@ import { PrayerStatusBadge, AccessBadge } from '../../components/StatusBadge'
 import { textColumn, dateColumn, badgeColumn } from '../../components/columns'
 import { SkeletonRows } from '../../components/Skeleton'
 import { ErrorState } from '../../components/ErrorState'
+import { ConfirmModal } from '../../components/Modal'
 import { Card } from '../../components/Card'
-import { usePrayers, type PrayerFilters } from '../../api/prayers'
+import { PrayerDrawer } from './PrayerDrawer'
+import { useDeletePrayer, usePrayers, type PrayerFilters } from '../../api/prayers'
 import { pageView, usePagedResource } from '../../lib/usePagedResource'
 import { formatDuration, formatNumber } from '../../lib/format'
+import { toast } from '../../store/toast'
+import { errorMessageFor } from '../../i18n/errors'
 import { fr } from '../../i18n/fr'
 import type { PrayerListItem } from '../../api/types'
 
@@ -53,6 +57,10 @@ export function PrayersListPage() {
   const navigate = useNavigate()
   const list = usePagedResource<{ filter: Filter }>({ initialFilters: { filter: 'all' } })
   const { filter } = list.filters
+  // Sélection du tiroir : état d'affichage propre à la page, hors du hook de liste.
+  const [selectedId, setSelectedId] = useState<string | null>(null)
+  const [deleteId, setDeleteId] = useState<string | null>(null)
+  const removePrayer = useDeletePrayer()
 
   const { data, isLoading, isError, error, refetch } = usePrayers({
     ...filterToQuery(filter),
@@ -63,6 +71,19 @@ export function PrayersListPage() {
   })
 
   const { rows, totalPages, totalElements } = pageView(data)
+
+  async function confirmDeletePrayer() {
+    if (!deleteId) return
+    try {
+      await removePrayer.mutateAsync(deleteId)
+      toast.success('Prêche supprimé.')
+      if (selectedId === deleteId) setSelectedId(null)
+    } catch (e) {
+      toast.error(errorMessageFor(e, { conflict: 'Dépubliez le prêche avant de le supprimer.' }))
+    } finally {
+      setDeleteId(null)
+    }
+  }
 
   const columns = useMemo<ColumnDef<PrayerListItem, unknown>[]>(
     () => [
@@ -131,8 +152,39 @@ export function PrayersListPage() {
           </span>
         ),
       },
+      {
+        id: 'actions',
+        header: () => 'Action',
+        size: 90,
+        cell: ({ row }) => (
+          <span className={styles.actions}>
+            <button
+              type="button"
+              className={styles.actionBtn}
+              aria-label="Modifier"
+              onClick={(e) => {
+                e.stopPropagation()
+                if (row.original.id) navigate(`/preches/${row.original.id}`)
+              }}
+            >
+              <Icon name="edit" size={15} />
+            </button>
+            <button
+              type="button"
+              className={`${styles.actionBtn} ${styles.danger}`}
+              aria-label="Supprimer"
+              onClick={(e) => {
+                e.stopPropagation()
+                if (row.original.id) setDeleteId(row.original.id)
+              }}
+            >
+              <Icon name="delete" size={15} />
+            </button>
+          </span>
+        ),
+      },
     ],
-    [],
+    [navigate],
   )
 
   return (
@@ -187,7 +239,8 @@ export function PrayersListPage() {
             data={rows}
             sorting={list.sorting}
             onSortingChange={list.setSorting}
-            onRowClick={(p) => p.id && navigate(`/preches/${p.id}`)}
+            onRowClick={(p) => p.id && setSelectedId(p.id)}
+            isRowHighlighted={(p) => p.id === selectedId}
           />
         )}
 
@@ -200,6 +253,18 @@ export function PrayersListPage() {
           />
         )}
       </PageBody>
+
+      <PrayerDrawer prayerId={selectedId} onClose={() => setSelectedId(null)} />
+
+      <ConfirmModal
+        open={deleteId !== null}
+        title="Supprimer ce prêche ?"
+        description="Cette action est définitive. Le fichier chiffré et ses statistiques seront supprimés."
+        confirmLabel="Supprimer"
+        danger
+        onConfirm={confirmDeletePrayer}
+        onCancel={() => setDeleteId(null)}
+      />
     </>
   )
 }
