@@ -71,6 +71,11 @@
   cursor: pointer;
 }
 
+.linkBtn:disabled {
+  color: var(--text-faint);
+  cursor: default;
+}
+
 .error {
   font-size: var(--fs-cell);
   color: var(--danger);

@@ -12,6 +12,7 @@ import { UsersPage } from '../pages/users/UsersPage'
 import { PaymentsPage } from '../pages/payments/PaymentsPage'
 import { NotificationsPage } from '../pages/notifications/NotificationsPage'
 import { SettingsPage } from '../pages/settings/SettingsPage'
+import { ForbiddenPage } from '../pages/errors/ForbiddenPage'
 
 export const router = createBrowserRouter([
   {
@@ -36,6 +37,7 @@ export const router = createBrowserRouter([
           { path: '/abonnements', element: <PaymentsPage /> },
           { path: '/notifications', element: <NotificationsPage /> },
           { path: '/parametres', element: <SettingsPage /> },
+          { path: '/acces-refuse', element: <ForbiddenPage /> },
         ],
       },
     ],

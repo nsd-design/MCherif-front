@@ -2,6 +2,7 @@
  * Formatage FR : montants GNF (espace insécable), dates en toutes lettres,
  * durées. Toute donnée affichée passe par ces helpers.
  */
+import type { MetricValue } from '../api/types'
 
 const NBSP = ' ' // espace insécable (séparateur de milliers, avant l'unité)
 
@@ -83,4 +84,14 @@ export function formatSignedNumber(value: number): string {
   if (value > 0) return `+${formatNumber(value)}`
   if (value < 0) return `−${formatNumber(Math.abs(value))}`
   return formatNumber(value)
+}
+
+/*
+ * Variation affichée sous un StatCard (ex. "+2 ce mois"). Le serveur renvoie
+ * déjà `changeLabel` avec la valeur signée intégrée : correctif provisoire en
+ * attendant un futur DTO `changeKind` côté backend, ne PAS re-préfixer avec
+ * `formatSignedNumber(m.change)` sous peine de doublon ("+2 +2 ce mois").
+ */
+export function changeText(m?: MetricValue): string {
+  return m?.changeLabel ?? ''
 }

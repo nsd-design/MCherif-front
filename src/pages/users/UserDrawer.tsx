@@ -4,6 +4,8 @@ import { Drawer } from '../../components/Drawer'
 import { Avatar } from '../../components/Avatar'
 import { Button } from '../../components/Button'
 import { ConfirmModal } from '../../components/Modal'
+import { SegmentedControl } from '../../components/SegmentedControl'
+import { UserStatusBadge } from '../../components/StatusBadge'
 import { SkeletonRows } from '../../components/Skeleton'
 import { ErrorState } from '../../components/ErrorState'
 import {
@@ -32,6 +34,8 @@ export function UserDrawer({ userId, onClose }: UserDrawerProps) {
   const unblock = useUnblockUser(userId ?? '')
 
   const [confirmBlock, setConfirmBlock] = useState(false)
+  const [extendDays, setExtendDays] = useState<'30' | '90' | '365'>('30')
+  const [confirmExtend, setConfirmExtend] = useState(false)
 
   async function run(action: Promise<unknown>, okMessage: string) {
     try {
@@ -57,7 +61,10 @@ export function UserDrawer({ userId, onClose }: UserDrawerProps) {
           <div className={styles.head}>
             <Avatar initials={initials(user.displayName, user.phone ?? '')} size={48} variant="soft" />
             <div className={styles.headInfo}>
-              <div className={styles.name}>{user.displayName ?? 'Sans nom'}</div>
+              <div className={styles.nameRow}>
+                <div className={styles.name}>{user.displayName ?? 'Sans nom'}</div>
+                {user.status && <UserStatusBadge status={user.status} />}
+              </div>
               <div className={styles.meta}>
                 {user.phone}
                 {user.registeredAt ? ` · inscrit le ${formatDateShort(user.registeredAt)}` : ''}
@@ -133,12 +140,25 @@ export function UserDrawer({ userId, onClose }: UserDrawerProps) {
             )}
           </div>
 
+          <div className={styles.extendRow}>
+            <SegmentedControl<'30' | '90' | '365'>
+              ariaLabel="Durée de prolongation"
+              value={extendDays}
+              onChange={setExtendDays}
+              segments={[
+                { value: '30', label: '30 j' },
+                { value: '90', label: '90 j' },
+                { value: '365', label: '365 j' },
+              ]}
+            />
+          </div>
+
           <div className={styles.footer}>
             <Button
               variant="primary"
               block
               disabled={extend.isPending}
-              onClick={() => run(extend.mutateAsync({ days: 30 }), 'Abonnement prolongé de 30 jours.')}
+              onClick={() => setConfirmExtend(true)}
             >
               Prolonger
             </Button>
@@ -169,6 +189,21 @@ export function UserDrawer({ userId, onClose }: UserDrawerProps) {
               run(block.mutateAsync(), 'Utilisateur bloqué.')
             }}
             onCancel={() => setConfirmBlock(false)}
+          />
+
+          <ConfirmModal
+            open={confirmExtend}
+            title="Prolonger l'abonnement ?"
+            description={`Prolonger de ${extendDays} jours.`}
+            confirmLabel="Prolonger"
+            onConfirm={() => {
+              setConfirmExtend(false)
+              run(
+                extend.mutateAsync({ days: Number(extendDays) }),
+                `Abonnement prolongé de ${extendDays} jours.`,
+              )
+            }}
+            onCancel={() => setConfirmExtend(false)}
           />
         </>
       )}

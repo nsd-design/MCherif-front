@@ -274,7 +274,6 @@ export function PublishPage() {
                   <div className={styles.coverTitle}>Photo par défaut</div>
                   <div className={styles.coverSub}>Portrait du Cheick</div>
                 </div>
-                <Button variant="secondary">Changer</Button>
               </div>
             </div>
           </Card>

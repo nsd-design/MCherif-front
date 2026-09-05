@@ -17,16 +17,11 @@ import { exportPaymentsCsv, usePayments, useSubscriptionStats } from '../../api/
 import { toast } from '../../store/toast'
 import { errorMessage } from '../../i18n/errors'
 import { planCodeLabel } from '../../i18n/enums'
-import { formatDateShort, formatGnf, formatNumber, formatSignedNumber } from '../../lib/format'
+import { changeText, formatDateShort, formatGnf, formatNumber } from '../../lib/format'
 import { pageView, usePagedResource } from '../../lib/usePagedResource'
-import type { MetricValue, PaymentListItem, PaymentMethod, PaymentStatus } from '../../api/types'
+import type { PaymentListItem, PaymentMethod, PaymentStatus } from '../../api/types'
 
 type Period = '30' | '90' | '365' | 'all'
-
-function changeText(m?: MetricValue): string {
-  if (!m) return ''
-  return `${formatSignedNumber(m.change ?? 0)} ${m.changeLabel ?? ''}`.trim()
-}
 
 /*
  * Borne basse du filtre de période, TRONQUÉE À LA JOURNÉE.

@@ -104,6 +104,18 @@ export function DataTable<T>({
                 isRowHighlighted?.(row.original) ? styles.highlighted : ''
               }`}
               onClick={onRowClick ? () => onRowClick(row.original) : undefined}
+              tabIndex={onRowClick ? 0 : undefined}
+              role={onRowClick ? 'button' : undefined}
+              onKeyDown={
+                onRowClick
+                  ? (e) => {
+                      if (e.key === 'Enter' || e.key === ' ') {
+                        e.preventDefault()
+                        onRowClick(row.original)
+                      }
+                    }
+                  : undefined
+              }
             >
               {row.getVisibleCells().map((cell) => (
                 <td key={cell.id} className={styles.td}>

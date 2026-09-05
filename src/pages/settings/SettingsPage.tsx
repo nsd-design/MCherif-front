@@ -19,7 +19,9 @@ import {
   useInviteAdmin,
   usePlans,
   useProtection,
+  useUpdateAdminRole,
   useUpdatePlans,
+  useUpdateProtection,
 } from '../../api/settings'
 import { useCan } from '../../lib/permissions'
 import { toast } from '../../store/toast'
@@ -36,24 +38,31 @@ export function SettingsPage() {
   const protection = useProtection()
   const admins = useAdmins()
   const updatePlans = useUpdatePlans()
+  const updateProtection = useUpdateProtection()
   const invite = useInviteAdmin()
   const removeAdmin = useDeleteAdmin()
+  const updateRole = useUpdateAdminRole()
   const { theme, setTheme } = useTheme()
 
   // Le serveur restreint ces actions au SUPER_ADMIN (@PreAuthorize sur
   // SettingsController). On masque ici pour éviter un 403 après coup ; la
   // décision reste serveur.
-  // `protection:edit` et `admins:changeRole` n'ont pas encore d'UI (voir F-07,
-  // hors périmètre ici) — pas de useCan tant qu'il n'y a rien à gater.
   const canEditPlans = useCan('plans:edit')
+  const canEditProtection = useCan('protection:edit')
   const canInvite = useCan('admins:invite')
+  const canChangeRole = useCan('admins:changeRole')
   const canRemoveAdmin = useCan('admins:remove')
 
   const [editingPlans, setEditingPlans] = useState<PlanResponse[] | null>(null)
+  const [editingProtection, setEditingProtection] = useState<{
+    maxDevicesPerAccount: number
+    premiumValidityDays: number
+  } | null>(null)
   const [inviting, setInviting] = useState(false)
   const [inviteEmail, setInviteEmail] = useState('')
   const [inviteRole, setInviteRole] = useState<AdminRole>('EDITOR')
   const [adminToDelete, setAdminToDelete] = useState<string | null>(null)
+  const [roleChange, setRoleChange] = useState<{ id: string; role: AdminRole } | null>(null)
 
   async function savePlans() {
     if (!editingPlans) return
@@ -70,6 +79,38 @@ export function SettingsPage() {
       setEditingPlans(null)
     } catch (e) {
       toast.error(errorMessage(e))
+    }
+  }
+
+  async function saveProtection() {
+    if (!editingProtection) return
+    try {
+      await updateProtection.mutateAsync(editingProtection)
+      toast.success('Configuration DRM mise à jour.')
+      setEditingProtection(null)
+    } catch (e) {
+      toast.error(
+        errorMessageFor(e, {
+          forbidden: 'Seul un super administrateur peut modifier la configuration DRM.',
+        }),
+      )
+    }
+  }
+
+  async function confirmRoleChange() {
+    if (!roleChange) return
+    try {
+      await updateRole.mutateAsync(roleChange)
+      toast.success('Rôle mis à jour.')
+    } catch (e) {
+      toast.error(
+        errorMessageFor(e, {
+          conflict: 'Impossible de rétrograder le dernier super administrateur.',
+          forbidden: 'Seul un super administrateur peut modifier un rôle.',
+        }),
+      )
+    } finally {
+      setRoleChange(null)
     }
   }
 
@@ -151,10 +192,27 @@ export function SettingsPage() {
           <Card>
             <div className={styles.drmHead}>
               <CardTitle>Configuration DRM</CardTitle>
-              <span className={styles.readonly}>
-                <Icon name="lock" size={14} />
-                LECTURE SEULE
-              </span>
+              <div className={styles.drmHeadActions}>
+                <span className={styles.readonly}>
+                  <Icon name="lock" size={14} />
+                  LECTURE SEULE
+                </span>
+                {canEditProtection && (
+                  <Button
+                    variant="secondary"
+                    className={styles.smallBtn}
+                    disabled={!protection.data}
+                    onClick={() =>
+                      setEditingProtection({
+                        maxDevicesPerAccount: protection.data?.maxDevicesPerAccount ?? 0,
+                        premiumValidityDays: protection.data?.premiumValidityDays ?? 0,
+                      })
+                    }
+                  >
+                    Modifier
+                  </Button>
+                )}
+              </div>
             </div>
             {protection.isLoading ? (
               <SkeletonRows rows={4} height={20} />
@@ -205,7 +263,23 @@ export function SettingsPage() {
                       <div className={styles.adminName}>{admin.name}</div>
                       <div className={styles.adminEmail}>{admin.email}</div>
                     </div>
-                    {admin.role && <RoleBadge role={admin.role} />}
+                    {canChangeRole && admin.id && admin.role ? (
+                      <div className={styles.roleSelect}>
+                        <SelectField
+                          value={admin.role}
+                          aria-label={`Rôle de ${admin.name ?? admin.email ?? ''}`}
+                          onChange={(e) =>
+                            setRoleChange({ id: admin.id!, role: e.target.value as AdminRole })
+                          }
+                          options={[
+                            { value: 'EDITOR', label: adminRoleLabel('EDITOR') },
+                            { value: 'SUPER_ADMIN', label: adminRoleLabel('SUPER_ADMIN') },
+                          ]}
+                        />
+                      </div>
+                    ) : (
+                      admin.role && <RoleBadge role={admin.role} />
+                    )}
                     {canRemoveAdmin && (
                       <button
                         className={styles.removeAdmin}
@@ -310,6 +384,55 @@ export function SettingsPage() {
         danger
         onConfirm={confirmDeleteAdmin}
         onCancel={() => setAdminToDelete(null)}
+      />
+
+      {/* Modale édition DRM */}
+      <Modal
+        open={editingProtection !== null}
+        title="Modifier la protection"
+        onClose={() => setEditingProtection(null)}
+      >
+        <div className={styles.modalBody}>
+          <TextField
+            label="Appareils max. par compte"
+            type="number"
+            value={editingProtection?.maxDevicesPerAccount ?? 0}
+            onChange={(e) =>
+              setEditingProtection((prev) =>
+                prev ? { ...prev, maxDevicesPerAccount: Number(e.target.value) } : prev,
+              )
+            }
+          />
+          <TextField
+            label="Validité Premium (jours)"
+            type="number"
+            value={editingProtection?.premiumValidityDays ?? 0}
+            onChange={(e) =>
+              setEditingProtection((prev) =>
+                prev ? { ...prev, premiumValidityDays: Number(e.target.value) } : prev,
+              )
+            }
+          />
+          <div className={styles.modalActions}>
+            <Button variant="secondary" onClick={() => setEditingProtection(null)}>
+              Annuler
+            </Button>
+            <Button variant="primary" onClick={saveProtection} disabled={updateProtection.isPending}>
+              Enregistrer
+            </Button>
+          </div>
+        </div>
+      </Modal>
+
+      <ConfirmModal
+        open={roleChange !== null}
+        title="Changer le rôle de cet administrateur ?"
+        description={
+          roleChange ? `Nouveau rôle : ${adminRoleLabel(roleChange.role)}.` : undefined
+        }
+        confirmLabel="Confirmer"
+        onConfirm={confirmRoleChange}
+        onCancel={() => setRoleChange(null)}
       />
     </>
   )

@@ -76,6 +76,12 @@
   color: var(--text-muted);
 }
 
+.drmHeadActions {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-3);
+}
+
 .readonly {
   display: inline-flex;
   align-items: center;
@@ -162,6 +168,11 @@
   font-size: var(--fs-meta);
   color: var(--text-muted);
   margin-top: 2px;
+}
+
+.roleSelect {
+  width: 150px;
+  flex-shrink: 0;
 }
 
 .removeAdmin {

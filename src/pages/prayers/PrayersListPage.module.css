@@ -14,9 +14,13 @@
 .cover {
   width: 36px;
   height: 36px;
-  border-radius: var(--r-sm);
-  object-fit: cover;
-  display: block;
+  border-radius: var(--r-thumb);
+  background: var(--primary-soft);
+  color: var(--primary);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
 }
 
 .title {
@@ -32,12 +36,6 @@
 .plays {
   font-weight: var(--fw-bold);
   color: var(--text);
-}
-
-.actions {
-  display: inline-flex;
-  color: var(--text-faint);
-  cursor: pointer;
 }
 
 .empty {

@@ -9,7 +9,6 @@ import { DataTable } from '../../components/DataTable'
 import { Pagination } from '../../components/Pagination'
 import { Avatar } from '../../components/Avatar'
 import { SubscriptionBadge } from '../../components/StatusBadge'
-import { Icon } from '../../components/Icon'
 import { SkeletonRows } from '../../components/Skeleton'
 import { ErrorState } from '../../components/ErrorState'
 import { Card } from '../../components/Card'
@@ -108,16 +107,6 @@ export function UsersPage() {
         size: 90,
         cell: ({ row }) => (
           <span className={styles.devices}>{row.original.deviceCount ?? 0}</span>
-        ),
-      },
-      {
-        id: 'actions',
-        header: () => '',
-        size: 44,
-        cell: () => (
-          <span className={styles.actions}>
-            <Icon name="dots" size={16} />
-          </span>
         ),
       },
     ],

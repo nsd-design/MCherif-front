@@ -4,6 +4,7 @@
  */
 import { API_PREFIX, API_ORIGIN, api, unwrap } from './http'
 import { clearTokens, getAccessToken, setTokens } from './tokenStore'
+import { toast } from '../store/toast'
 import type { AdminSummary, TokenResponse } from './types'
 
 /*
@@ -109,6 +110,10 @@ export async function fetchCurrentAdmin(email: string): Promise<AdminSummary | n
     const admins = unwrap(await api.GET('/api/v1/admin/settings/admins'))
     return admins?.find((a) => a.email === email) ?? null
   } catch {
+    // Échec de l'enrichissement du profil (réseau, 5xx…) : la session reste
+    // valide, seuls nom/rôle resteront en repli — signaler discrètement au
+    // lieu d'avaler l'erreur.
+    toast.error('Profil administrateur indisponible pour le moment.')
     return null
   }
 }

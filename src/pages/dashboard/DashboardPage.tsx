@@ -9,14 +9,8 @@ import { Skeleton, SkeletonRows } from '../../components/Skeleton'
 import { ErrorState } from '../../components/ErrorState'
 import { useActivity, useDashboardStats, useEncodingJobs, useRevenue } from '../../api/dashboard'
 import { fr } from '../../i18n/fr'
-import { formatGnf, formatNumber, formatSignedNumber, formatDateShort } from '../../lib/format'
-import type { ActivityItem, EncodingState, MetricValue } from '../../api/types'
-
-function changeText(m?: MetricValue): string {
-  if (!m) return ''
-  const label = m.changeLabel ?? ''
-  return `${formatSignedNumber(m.change ?? 0)} ${label}`.trim()
-}
+import { changeText, formatGnf, formatNumber, formatDateShort } from '../../lib/format'
+import type { ActivityItem, EncodingState } from '../../api/types'
 
 const STATE_LABEL: Record<EncodingState, string> = {
   UPLOADED: 'Téléversement…',
@@ -41,7 +35,7 @@ export function DashboardPage() {
 
   return (
     <>
-      <TopBar title={fr.nav.dashboard} showSearch />
+      <TopBar title={fr.nav.dashboard} />
       <PageBody>
         <div className={styles.stats}>
           {stats.isLoading ? (

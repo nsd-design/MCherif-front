@@ -1,4 +1,4 @@
-import { useState, type FormEvent } from 'react'
+import { useEffect, useState, type FormEvent } from 'react'
 import { Navigate, useLocation, useNavigate } from 'react-router-dom'
 import styles from './LoginPage.module.css'
 import { TextField } from '../../components/TextField'
@@ -7,6 +7,11 @@ import { useAuthStore } from '../../store/auth'
 import { forgotPassword } from '../../api/auth'
 import { errorMessageFor } from '../../i18n/errors'
 import { fr } from '../../i18n/fr'
+import { toast } from '../../store/toast'
+
+/** Code envoyé par e-mail (pas push) : laisser le temps de le consulter avant
+ *  de réarmer le renvoi, tout en restant loin de la limite serveur (10/15min). */
+const RESEND_COOLDOWN_S = 45
 
 type Mode = 'password' | 'twofa' | 'forgot'
 
@@ -41,8 +46,15 @@ export function LoginPage() {
   const [error, setError] = useState<string | null>(null)
   const [info, setInfo] = useState<string | null>(null)
   const [busy, setBusy] = useState(false)
+  const [resendCooldown, setResendCooldown] = useState(0)
 
   const step: Mode = pendingTwoFa ? 'twofa' : mode
+
+  useEffect(() => {
+    if (resendCooldown <= 0) return
+    const t = setTimeout(() => setResendCooldown((c) => c - 1), 1000)
+    return () => clearTimeout(t)
+  }, [resendCooldown])
 
   async function handleLogin(e: FormEvent) {
     e.preventDefault()
@@ -51,6 +63,7 @@ export function LoginPage() {
     try {
       // Un 200 garantit qu'un code 2FA a été envoyé ; sinon `login` lève.
       await login(email, password)
+      setResendCooldown(RESEND_COOLDOWN_S)
     } catch (err) {
       setError(
         errorMessageFor(err, {
@@ -75,6 +88,26 @@ export function LoginPage() {
       setError(
         errorMessageFor(err, {
           'invalid-code': 'Code invalide ou expiré. Vérifiez le code reçu.',
+        }),
+      )
+    } finally {
+      setBusy(false)
+    }
+  }
+
+  async function handleResend() {
+    setError(null)
+    setBusy(true)
+    try {
+      await login(email, password)
+      toast.success('Code renvoyé.')
+      setCode('')
+      setResendCooldown(RESEND_COOLDOWN_S)
+    } catch (err) {
+      setError(
+        errorMessageFor(err, {
+          'rate-limited':
+            'Trop de tentatives de connexion. Réessayez dans une quinzaine de minutes.',
         }),
       )
     } finally {
@@ -196,6 +229,14 @@ export function LoginPage() {
           <Button type="submit" variant="primary" block disabled={busy || code.length !== 6}>
             {busy ? fr.common.loading : fr.auth.verify}
           </Button>
+          <button
+            type="button"
+            className={styles.linkBtn}
+            onClick={handleResend}
+            disabled={busy || resendCooldown > 0}
+          >
+            {resendCooldown > 0 ? `${fr.auth.resend} (${resendCooldown}s)` : fr.auth.resend}
+          </button>
         </form>
       )}
 

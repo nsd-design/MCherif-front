@@ -64,6 +64,11 @@
   cursor: pointer;
 }
 
+.clickable:focus-visible {
+  outline: 2px solid var(--primary);
+  outline-offset: -2px;
+}
+
 .tr:hover {
   background: var(--row-hover);
 }

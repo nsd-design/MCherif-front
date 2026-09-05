@@ -69,7 +69,11 @@ export function PrayersListPage() {
         id: 'cover',
         header: () => '',
         size: 56,
-        cell: () => <img src="/cheick.jpeg" alt="" className={styles.cover} />,
+        cell: () => (
+          <span className={styles.cover}>
+            <Icon name="audio" size={16} />
+          </span>
+        ),
       },
       {
         accessorKey: 'title',
@@ -128,16 +132,6 @@ export function PrayersListPage() {
         cell: ({ row }) => (
           <span className={styles.plays}>
             {row.original.status === 'PUBLISHED' ? formatNumber(row.original.playCount ?? 0) : '—'}
-          </span>
-        ),
-      },
-      {
-        id: 'actions',
-        header: () => '',
-        size: 44,
-        cell: () => (
-          <span className={styles.actions}>
-            <Icon name="dots" size={16} />
           </span>
         ),
       },

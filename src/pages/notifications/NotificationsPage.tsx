@@ -7,6 +7,7 @@ import { TextField } from '../../components/TextField'
 import { TextareaField } from '../../components/TextareaField'
 import { SegmentedControl } from '../../components/SegmentedControl'
 import { Button } from '../../components/Button'
+import { Pagination } from '../../components/Pagination'
 import { TargetBadge } from '../../components/StatusBadge'
 import { SkeletonRows } from '../../components/Skeleton'
 import { ErrorState } from '../../components/ErrorState'
@@ -14,18 +15,22 @@ import { useNotifications, useSendNotification } from '../../api/notifications'
 import { toast } from '../../store/toast'
 import { errorMessage } from '../../i18n/errors'
 import { formatDateShort, formatNumber } from '../../lib/format'
+import { pageView, usePagedResource } from '../../lib/usePagedResource'
 import { fr } from '../../i18n/fr'
 import type { NotificationTarget } from '../../api/types'
 
+const PAGE_SIZE = 20
+
 export function NotificationsPage() {
-  const { data, isLoading, isError, error, refetch } = useNotifications(0, 20)
+  const list = usePagedResource({ initialFilters: {}, pageSize: PAGE_SIZE })
+  const { data, isLoading, isError, error, refetch } = useNotifications(list.page, list.pageSize)
   const send = useSendNotification()
 
   const [title, setTitle] = useState('')
   const [message, setMessage] = useState('')
   const [target, setTarget] = useState<NotificationTarget>('ALL')
 
-  const items = data?.content ?? []
+  const { rows: items, totalPages, totalElements } = pageView(data)
 
   async function handleSend() {
     if (!title.trim() || !message.trim()) {
@@ -76,6 +81,14 @@ export function NotificationsPage() {
                 ))
               )}
             </div>
+            {totalPages > 1 && (
+              <Pagination
+                page={list.page + 1}
+                pageCount={totalPages}
+                summary={`${formatNumber(totalElements)} notifications · page ${list.page + 1} sur ${totalPages}`}
+                onChange={(p) => list.setPage(p - 1)}
+              />
+            )}
           </Card>
 
           <div className={styles.side}>
