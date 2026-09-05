@@ -4,6 +4,13 @@
   color: var(--text-muted);
 }
 
+.toolbar {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-3);
+  flex-wrap: wrap;
+}
+
 .user {
   display: inline-flex;
   align-items: center;
@@ -33,4 +40,11 @@
   display: inline-flex;
   color: var(--text-faint);
   cursor: pointer;
+}
+
+.empty {
+  padding: var(--sp-8);
+  text-align: center;
+  font-size: var(--fs-cell);
+  color: var(--text-muted);
 }

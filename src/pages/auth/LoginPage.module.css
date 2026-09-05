@@ -61,8 +61,25 @@
   color: var(--primary);
 }
 
+.linkBtn {
+  background: transparent;
+  border: none;
+  padding: 0;
+  font-size: 12.5px;
+  font-weight: var(--fw-bold);
+  color: var(--primary);
+  cursor: pointer;
+}
+
 .error {
   font-size: var(--fs-cell);
   color: var(--danger);
   font-weight: var(--fw-semibold);
+}
+
+.info {
+  font-size: var(--fs-cell);
+  color: var(--text-muted);
+  font-weight: var(--fw-semibold);
+  line-height: 1.4;
 }

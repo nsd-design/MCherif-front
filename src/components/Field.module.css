@@ -34,6 +34,49 @@
   padding: 10.5px 13.5px;
 }
 
+/* Champ mot de passe : conteneur du bouton afficher/masquer. */
+.controlWrap {
+  position: relative;
+}
+
+/* Réserve à droite pour que le texte ne passe pas sous le bouton. */
+.controlWithAction {
+  padding-right: var(--sp-11);
+}
+
+/* Doit suivre .control:focus (même spécificité) : le raccourci `padding`
+   de l'état focus écraserait sinon la réserve ci-dessus. */
+.controlWithAction:focus {
+  padding-right: calc(var(--sp-11) - 0.5px);
+}
+
+.reveal {
+  position: absolute;
+  right: 14px;
+  top: 50%;
+  transform: translateY(-50%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  background: none;
+  border: none;
+  border-radius: var(--r-sm);
+  color: var(--text-faint);
+  cursor: pointer;
+  transition: color 0.15s ease;
+}
+
+.reveal:hover {
+  color: var(--text);
+}
+
+.reveal:focus-visible {
+  outline: 2px solid var(--primary);
+  outline-offset: 2px;
+  color: var(--text);
+}
+
 .textarea {
   resize: vertical;
   min-height: 74px;

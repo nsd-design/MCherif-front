@@ -18,12 +18,13 @@
   padding: 0;
 }
 
-.thBtn {
+/* Typographie commune aux deux rendus d'en-tête : bouton (colonne triable) et
+   texte simple (colonne non triable). Un en-tête non triable ne doit pas être
+   un bouton désactivé — il ne se comporte pas comme un bouton. */
+.thLabel {
   display: inline-flex;
   align-items: center;
   gap: 4px;
-  background: transparent;
-  border: none;
   width: 100%;
   padding: 12px 20px;
   font-size: var(--fs-badge);
@@ -34,8 +35,17 @@
   text-align: left;
 }
 
-.sortable {
+/* S'applique EN PLUS de .thLabel (les deux classes sont posées côte à côte
+   dans le JSX) : stylelint ne connaît pas `composes` de CSS Modules. */
+.thBtn {
+  background: transparent;
+  border: none;
   cursor: pointer;
+}
+
+.thBtn:focus-visible {
+  outline: 2px solid var(--primary);
+  outline-offset: -2px;
 }
 
 .asc {

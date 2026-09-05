@@ -4,6 +4,10 @@
   gap: var(--sp-4);
 }
 
+.span4 {
+  grid-column: 1 / -1;
+}
+
 .mt {
   margin-top: var(--sp-2);
 }

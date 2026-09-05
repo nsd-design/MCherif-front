@@ -1,0 +1,14 @@
+.wrap {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--sp-3);
+  padding: var(--sp-6);
+  text-align: center;
+}
+
+.message {
+  font-size: var(--fs-cell);
+  color: var(--text-muted);
+  font-weight: var(--fw-semibold);
+}

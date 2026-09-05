@@ -69,3 +69,18 @@ export function formatDuration(totalSeconds: number): string {
   if (hours === 0) return `${minutes}${NBSP}min`
   return `${hours}${NBSP}h${NBSP}${minutes.toString().padStart(2, '0')}`
 }
+
+/** "2026-07" -> "juil. 2026" (abrégé, pour l'axe du graphique). */
+export function formatMonth(isoMonth: string): string {
+  const [year, month] = isoMonth.split('-')
+  const idx = Number(month) - 1
+  if (Number.isNaN(idx) || idx < 0 || idx > 11) return isoMonth
+  return `${MONTHS_SHORT[idx]} ${year}`
+}
+
+/** Signe FR d'une variation numérique : 312 -> "+312", -5 -> "−5". */
+export function formatSignedNumber(value: number): string {
+  if (value > 0) return `+${formatNumber(value)}`
+  if (value < 0) return `−${formatNumber(Math.abs(value))}`
+  return formatNumber(value)
+}

@@ -1,7 +1,8 @@
-import { useEffect, type ReactNode } from 'react'
-import { createPortal } from 'react-dom'
+import { useRef, type ReactNode } from 'react'
 import styles from './Drawer.module.css'
 import { Icon } from './Icon'
+import { OverlayShell } from './OverlayShell'
+import { fr } from '../i18n/fr'
 
 interface DrawerProps {
   open: boolean
@@ -12,32 +13,28 @@ interface DrawerProps {
 
 /** Drawer latéral droit (détail utilisateur/prêche). Voile + ombre douce. */
 export function Drawer({ open, onClose, ariaLabel, children }: DrawerProps) {
-  useEffect(() => {
-    if (!open) return
-    const onKey = (e: KeyboardEvent) => {
-      if (e.key === 'Escape') onClose()
-    }
-    window.addEventListener('keydown', onKey)
-    return () => window.removeEventListener('keydown', onKey)
-  }, [open, onClose])
+  const closeRef = useRef<HTMLButtonElement>(null)
 
-  if (!open) return null
-
-  return createPortal(
-    <div className={styles.overlay} onClick={onClose}>
-      <aside
-        className={styles.panel}
-        role="dialog"
-        aria-modal="true"
-        aria-label={ariaLabel}
-        onClick={(e) => e.stopPropagation()}
+  return (
+    <OverlayShell
+      open={open}
+      onClose={onClose}
+      overlayClassName={styles.overlay}
+      panelClassName={styles.panel}
+      as="aside"
+      ariaLabel={ariaLabel}
+      initialFocusRef={closeRef}
+    >
+      <button
+        ref={closeRef}
+        type="button"
+        className={styles.close}
+        onClick={onClose}
+        aria-label={fr.common.close}
       >
-        <button className={styles.close} onClick={onClose} aria-label="Fermer">
-          <Icon name="close" size={18} strokeWidth={2.4} />
-        </button>
-        {children}
-      </aside>
-    </div>,
-    document.body,
+        <Icon name="close" size={18} strokeWidth={2.4} />
+      </button>
+      {children}
+    </OverlayShell>
   )
 }

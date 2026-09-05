@@ -8,17 +8,21 @@ import {
 } from 'recharts'
 import { useTheme } from '../theme/useTheme'
 import { palettes } from '../theme/tokens'
-import { formatGnf } from '../lib/format'
-import type { RevenuePoint } from '../types'
+import { formatGnf, formatMonth } from '../lib/format'
+import type { RevenuePoint } from '../api/types'
 
 /** Courbe des revenus sur 12 mois (aire + trait primary). */
 export function RevenueChart({ data }: { data: RevenuePoint[] }) {
   const { theme } = useTheme()
   const c = palettes[theme]
+  const points = data.map((d) => ({
+    monthLabel: d.month ? formatMonth(d.month) : '',
+    revenueGnf: d.revenueGnf ?? 0,
+  }))
 
   return (
     <ResponsiveContainer width="100%" height={200}>
-      <AreaChart data={data} margin={{ top: 8, right: 4, left: 4, bottom: 0 }}>
+      <AreaChart data={points} margin={{ top: 8, right: 4, left: 4, bottom: 0 }}>
         <defs>
           <linearGradient id="revFill" x1="0" y1="0" x2="0" y2="1">
             <stop offset="0%" stopColor={c.primary} stopOpacity={0.22} />

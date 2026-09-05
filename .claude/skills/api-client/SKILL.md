@@ -8,13 +8,16 @@ description: Met en place et utilise le client API typé du back-office React/TS
 Le front ne parle à l'API **que** via un client typé généré depuis l'OpenAPI. On n'invente jamais d'URL ni de type.
 
 ## Génération des types
-- Source : la spec OpenAPI du backend (`/v3/api-docs`). Générer avec **openapi-typescript** vers `src/api/schema.d.ts` (script `pnpm run gen:api`).
-- Utiliser **openapi-fetch** (client typé léger) créé dans `src/api/client.ts` avec `baseUrl = import.meta.env.VITE_API_BASE_URL`.
+- Source : la spec OpenAPI du backend (`/v3/api-docs`). Générer avec **openapi-typescript** vers `src/api/generated/schema.d.ts` (script `pnpm gen:api`) ; alias de domaine exposés dans `src/api/types.ts`.
+- Le client **openapi-fetch** vit dans `src/api/http.ts`, avec `baseUrl = VITE_API_BASE_URL` — **vide par défaut**, donc appels relatifs same-origin relayés par le proxy de dev Vite.
+- **Toute réponse passe par `unwrap()`** : renvoie `data` ou lève une `ApiError`. Ne jamais lire `result.data` directement, un statut d'erreur passerait inaperçu.
+- Les listes Spring exposent un objet `pageable` : le `querySerializer` de `http.ts` l'aplatit en `page/size/sort`.
 - **Ne jamais réécrire à la main** les types d'entités : les importer depuis le schéma généré. Si un endpoint manque, le signaler — ne pas le créer côté front.
 
 ## Authentification & intercepteur
-- **Access token en mémoire** (jamais `localStorage`). Ajouter l'en-tête `Authorization: Bearer <token>` via un middleware du client.
-- Sur **401** : tenter un **refresh** (endpoint dédié), rejouer la requête une fois ; si le refresh échoue → déconnexion + redirection Connexion.
+- **Access ET refresh en mémoire** (`src/api/tokenStore.ts`, jamais `localStorage`). En-tête `Authorization: Bearer <token>` ajouté par le `fetch` maison de `http.ts`.
+- Sur **401** : tenter un **refresh** (en un seul vol), rejouer la requête une fois ; si le refresh échoue → purge + redirection Connexion.
+- ⚠️ **Exception : les endpoints `/admin/auth/*` sont exclus de ce mécanisme.** Leurs 401 sont métier (`invalid-credentials`, `invalid-code`, token de reset invalide) et non des sessions expirées — voir le skill **auth-flow**.
 - Ne jamais logger les tokens.
 
 ## Hooks React Query par ressource
@@ -25,6 +28,7 @@ Le front ne parle à l'API **que** via un client typé généré depuis l'OpenAP
 
 ## Erreurs
 - Mapper les réponses **RFC 7807** (`application/problem+json`) en messages FR sobres pour l'UI (toasts / erreurs de champ), jamais le brut technique.
+- Indexer sur `ProblemDetail.code` via `src/i18n/errors.ts` (`errorMessage`, ou `errorMessageFor` pour une nuance propre à une action). **Ne jamais afficher `detail`.** Repli générique si le code est inconnu.
 
 ## Définition de terminé
 - [ ] Types générés depuis l'OpenAPI (script reproductible) ; aucun type d'API écrit à la main.

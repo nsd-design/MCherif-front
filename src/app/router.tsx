@@ -3,6 +3,7 @@ import { AppLayout } from '../routes/layouts/AppLayout'
 import { AuthLayout } from '../routes/layouts/AuthLayout'
 import { ProtectedRoute } from './ProtectedRoute'
 import { LoginPage } from '../pages/auth/LoginPage'
+import { ResetPasswordPage } from '../pages/auth/ResetPasswordPage'
 import { DashboardPage } from '../pages/dashboard/DashboardPage'
 import { PrayersListPage } from '../pages/prayers/PrayersListPage'
 import { PrayerDetailPage } from '../pages/prayers/PrayerDetailPage'
@@ -15,7 +16,10 @@ import { SettingsPage } from '../pages/settings/SettingsPage'
 export const router = createBrowserRouter([
   {
     element: <AuthLayout />,
-    children: [{ path: '/connexion', element: <LoginPage /> }],
+    children: [
+      { path: '/connexion', element: <LoginPage /> },
+      { path: '/mot-de-passe/reinitialiser', element: <ResetPasswordPage /> },
+    ],
   },
   {
     element: <ProtectedRoute />,

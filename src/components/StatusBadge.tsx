@@ -2,11 +2,21 @@ import styles from './StatusBadge.module.css'
 import type {
   PrayerStatus,
   SubscriptionStatus,
-  TransactionStatus,
-  AccessTier,
+  PaymentStatus,
+  PrayerAccess,
   NotificationTarget,
   AdminRole,
-} from '../types'
+  UserStatus,
+} from '../api/types'
+import {
+  adminRoleLabel,
+  notificationTargetLabel,
+  paymentStatusLabel,
+  prayerAccessLabel,
+  prayerStatusLabel,
+  subscriptionStatusLabel,
+  userStatusLabel,
+} from '../i18n/enums'
 import { fr } from '../i18n/fr'
 
 type Tone = 'success' | 'warn' | 'muted' | 'danger'
@@ -16,76 +26,60 @@ function Pill({ tone, children }: { tone: Tone; children: string }) {
 }
 
 const PRAYER_TONE: Record<PrayerStatus, Tone> = {
-  published: 'success',
-  encoding: 'warn',
-  draft: 'muted',
-  failed: 'danger',
+  PUBLISHED: 'success',
+  ENCODING: 'warn',
+  DRAFT: 'muted',
+  FAILED: 'danger',
 }
 
 export function PrayerStatusBadge({ status }: { status: PrayerStatus }) {
-  const label = {
-    published: fr.status.published,
-    encoding: fr.status.encoding,
-    draft: fr.status.draft,
-    failed: fr.status.failed,
-  }[status]
-  return <Pill tone={PRAYER_TONE[status]}>{label}</Pill>
+  return <Pill tone={PRAYER_TONE[status]}>{prayerStatusLabel(status)}</Pill>
 }
 
 const SUB_TONE: Record<SubscriptionStatus, Tone> = {
-  active: 'success',
-  expired: 'danger',
-  none: 'muted',
+  ACTIVE: 'success',
+  EXPIRED: 'danger',
 }
 
-export function SubscriptionBadge({ status }: { status: SubscriptionStatus }) {
-  const label = {
-    active: fr.status.active,
-    expired: fr.status.expired,
-    none: fr.status.none,
-  }[status]
-  return <Pill tone={SUB_TONE[status]}>{label}</Pill>
+/** Statut d'abonnement ; `null` = aucun abonnement. */
+export function SubscriptionBadge({ status }: { status: SubscriptionStatus | null }) {
+  if (status == null) return <Pill tone="muted">{fr.status.none}</Pill>
+  return <Pill tone={SUB_TONE[status]}>{subscriptionStatusLabel(status)}</Pill>
 }
 
-const TX_TONE: Record<TransactionStatus, Tone> = {
-  success: 'success',
-  pending: 'warn',
-  failed: 'danger',
+const TX_TONE: Record<PaymentStatus, Tone> = {
+  SUCCESS: 'success',
+  PENDING: 'warn',
+  FAILED: 'danger',
 }
 
-export function TransactionBadge({ status }: { status: TransactionStatus }) {
-  const label = {
-    success: fr.status.success,
-    pending: fr.status.pending,
-    failed: fr.status.txFailed,
-  }[status]
-  return <Pill tone={TX_TONE[status]}>{label}</Pill>
+export function TransactionBadge({ status }: { status: PaymentStatus }) {
+  return <Pill tone={TX_TONE[status]}>{paymentStatusLabel(status)}</Pill>
+}
+
+const USER_TONE: Record<UserStatus, Tone> = {
+  ACTIVE: 'success',
+  BLOCKED: 'danger',
+}
+
+export function UserStatusBadge({ status }: { status: UserStatus }) {
+  return <Pill tone={USER_TONE[status]}>{userStatusLabel(status)}</Pill>
 }
 
 /** Gratuit = pilule contour primary ; Premium = pilule neutre. */
-export function AccessBadge({ access }: { access: AccessTier }) {
-  if (access === 'free') {
-    return <span className={`${styles.badge} ${styles.freeOutline}`}>{fr.common.free}</span>
+export function AccessBadge({ access }: { access: PrayerAccess }) {
+  if (access === 'FREE') {
+    return <span className={`${styles.badge} ${styles.freeOutline}`}>{prayerAccessLabel(access)}</span>
   }
-  return <Pill tone="muted">{fr.common.premium}</Pill>
+  return <Pill tone="muted">{prayerAccessLabel(access)}</Pill>
 }
 
 export function TargetBadge({ target }: { target: NotificationTarget }) {
-  return target === 'all' ? (
-    <Pill tone="success">Tous</Pill>
-  ) : (
-    <Pill tone="muted">Abonnés</Pill>
+  return (
+    <Pill tone={target === 'ALL' ? 'success' : 'muted'}>{notificationTargetLabel(target)}</Pill>
   )
-}
-
-const ROLE_LABEL: Record<AdminRole, string> = {
-  super: 'Super admin',
-  editor: 'Éditeur',
-  finance: 'Finance',
 }
 
 export function RoleBadge({ role }: { role: AdminRole }) {
-  return (
-    <Pill tone={role === 'super' ? 'success' : 'muted'}>{ROLE_LABEL[role]}</Pill>
-  )
+  return <Pill tone={role === 'SUPER_ADMIN' ? 'success' : 'muted'}>{adminRoleLabel(role)}</Pill>
 }

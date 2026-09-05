@@ -46,7 +46,8 @@ export const palettes: Record<Theme, ThemePalette> = { light, dark }
 
 /** Couleurs de marque des moyens de paiement (fixes, hors thème). */
 export const paymentColors = {
-  orange: { bg: '#ff7900', fg: '#ffffff' },
-  mtn: { bg: '#ffcc00', fg: '#17201b' },
-  card: { bg: '#17201b', fg: '#ffffff' },
+  ORANGE_MONEY: { bg: '#ff7900', fg: '#ffffff' },
+  MTN_MOMO: { bg: '#ffcc00', fg: '#17201b' },
+  YMONEY: { bg: '#e6007e', fg: '#ffffff' },
+  CARD: { bg: '#17201b', fg: '#ffffff' },
 } as const

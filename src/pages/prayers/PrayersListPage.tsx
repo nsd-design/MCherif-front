@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react'
+import { useMemo } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { type ColumnDef } from '@tanstack/react-table'
 import styles from './PrayersListPage.module.css'
@@ -12,11 +12,13 @@ import { Button } from '../../components/Button'
 import { Icon } from '../../components/Icon'
 import { PrayerStatusBadge, AccessBadge } from '../../components/StatusBadge'
 import { SkeletonRows } from '../../components/Skeleton'
+import { ErrorState } from '../../components/ErrorState'
 import { Card } from '../../components/Card'
-import { usePrayers } from '../../api/hooks'
+import { usePrayers, type PrayerFilters } from '../../api/prayers'
+import { pageView, usePagedResource } from '../../lib/usePagedResource'
 import { formatDateShort, formatDuration, formatNumber } from '../../lib/format'
 import { fr } from '../../i18n/fr'
-import type { Prayer } from '../../types'
+import type { PrayerListItem } from '../../api/types'
 
 type Filter = 'all' | 'published' | 'draft' | 'encoding' | 'free' | 'premium'
 
@@ -29,89 +31,103 @@ const FILTERS: ChipOption<Filter>[] = [
   { value: 'premium', label: 'Premium' },
 ]
 
-function matchesFilter(p: Prayer, filter: Filter): boolean {
+function filterToQuery(filter: Filter): Pick<PrayerFilters, 'status' | 'access'> {
   switch (filter) {
-    case 'all':
-      return true
+    case 'published':
+      return { status: 'PUBLISHED' }
+    case 'draft':
+      return { status: 'DRAFT' }
+    case 'encoding':
+      return { status: 'ENCODING' }
     case 'free':
-      return p.access === 'free'
+      return { access: 'FREE' }
     case 'premium':
-      return p.access === 'premium'
+      return { access: 'PREMIUM' }
     default:
-      return p.status === filter
+      return {}
   }
 }
 
 export function PrayersListPage() {
   const navigate = useNavigate()
-  const { data, isLoading } = usePrayers()
-  const [filter, setFilter] = useState<Filter>('all')
-  const [search, setSearch] = useState('')
+  const list = usePagedResource<{ filter: Filter }>({ initialFilters: { filter: 'all' } })
+  const { filter } = list.filters
 
-  const rows = useMemo(() => {
-    const list = data ?? []
-    const q = search.trim().toLowerCase()
-    return list.filter(
-      (p) =>
-        matchesFilter(p, filter) &&
-        (q === '' ||
-          p.title.toLowerCase().includes(q) ||
-          p.theme.toLowerCase().includes(q)),
-    )
-  }, [data, filter, search])
+  const { data, isLoading, isError, error, refetch } = usePrayers({
+    ...filterToQuery(filter),
+    q: list.q,
+    sort: list.sort,
+    page: list.page,
+    size: list.pageSize,
+  })
 
-  const columns = useMemo<ColumnDef<Prayer, unknown>[]>(
+  const { rows, totalPages, totalElements } = pageView(data)
+
+  const columns = useMemo<ColumnDef<PrayerListItem, unknown>[]>(
     () => [
       {
         id: 'cover',
         header: () => '',
         size: 56,
-        enableSorting: false,
-        cell: ({ row }) => (
-          <img src={row.original.coverUrl} alt="" className={styles.cover} />
-        ),
+        cell: () => <img src="/cheick.jpeg" alt="" className={styles.cover} />,
       },
       {
         accessorKey: 'title',
         header: () => 'Titre',
+        enableSorting: true,
         cell: ({ row }) => <span className={styles.title}>{row.original.title}</span>,
       },
-      { accessorKey: 'theme', header: () => 'Thème', size: 110 },
       {
-        accessorKey: 'recordedAt',
+        accessorKey: 'theme',
+        header: () => 'Thème',
+        size: 110,
+        enableSorting: true,
+        cell: ({ row }) => <span className={styles.muted}>{row.original.theme ?? '—'}</span>,
+      },
+      {
+        accessorKey: 'recordedOn',
         header: () => 'Date',
         size: 130,
+        enableSorting: true,
         cell: ({ row }) => (
-          <span className={styles.muted}>{formatDateShort(row.original.recordedAt)}</span>
+          <span className={styles.muted}>
+            {row.original.recordedOn ? formatDateShort(row.original.recordedOn) : '—'}
+          </span>
         ),
       },
       {
         accessorKey: 'durationSec',
         header: () => 'Durée',
         size: 90,
+        enableSorting: true,
         cell: ({ row }) => (
-          <span className={styles.muted}>{formatDuration(row.original.durationSec)}</span>
+          <span className={styles.muted}>{formatDuration(row.original.durationSec ?? 0)}</span>
         ),
       },
       {
         accessorKey: 'status',
         header: () => 'Statut',
         size: 130,
-        cell: ({ row }) => <PrayerStatusBadge status={row.original.status} />,
+        enableSorting: true,
+        cell: ({ row }) =>
+          row.original.status ? <PrayerStatusBadge status={row.original.status} /> : null,
       },
       {
         accessorKey: 'access',
         header: () => 'Accès',
         size: 100,
-        cell: ({ row }) => <AccessBadge access={row.original.access} />,
+        enableSorting: true,
+        cell: ({ row }) =>
+          row.original.access ? <AccessBadge access={row.original.access} /> : null,
       },
       {
-        accessorKey: 'plays',
+        accessorKey: 'playCount',
         header: () => 'Écoutes',
         size: 90,
+        enableSorting: true,
         cell: ({ row }) => (
           <span className={styles.plays}>
-            {row.original.plays === null ? '—' : formatNumber(row.original.plays)}
+            {row.original.status === 'PUBLISHED' ? formatNumber(row.original.playCount ?? 0) : '—'}
           </span>
         ),
       },
@@ -119,7 +135,6 @@ export function PrayersListPage() {
         id: 'actions',
         header: () => '',
         size: 44,
-        enableSorting: false,
         cell: () => (
           <span className={styles.actions}>
             <Icon name="dots" size={16} />
@@ -136,7 +151,7 @@ export function PrayersListPage() {
         title={
           <span>
             {fr.nav.prayers}{' '}
-            <span className={styles.count}>· 128 enregistrements</span>
+            <span className={styles.count}>· {formatNumber(totalElements)} enregistrements</span>
           </span>
         }
         showAvatar={false}
@@ -154,30 +169,46 @@ export function PrayersListPage() {
         <div className={styles.toolbar}>
           <SearchInput
             placeholder="Rechercher un titre, un thème…"
-            value={search}
-            onChange={(e) => setSearch(e.target.value)}
+            value={list.search}
+            onChange={(e) => list.setSearch(e.target.value)}
           />
-          <FilterChips options={FILTERS} value={filter} onChange={setFilter} />
+          <FilterChips
+            options={FILTERS}
+            value={filter}
+            onChange={(next) => list.setFilters({ filter: next })}
+          />
         </div>
 
         {isLoading ? (
           <Card flush>
             <SkeletonRows rows={7} height={24} />
           </Card>
+        ) : isError ? (
+          <Card>
+            <ErrorState error={error} onRetry={() => refetch()} />
+          </Card>
+        ) : rows.length === 0 ? (
+          <Card>
+            <div className={styles.empty}>{fr.common.empty}</div>
+          </Card>
         ) : (
           <DataTable
             columns={columns}
             data={rows}
-            onRowClick={(p) => navigate(`/preches/${p.id}`)}
+            sorting={list.sorting}
+            onSortingChange={list.setSorting}
+            onRowClick={(p) => p.id && navigate(`/preches/${p.id}`)}
           />
         )}
 
-        <Pagination
-          page={1}
-          pageCount={13}
-          summary="128 prêches · page 1 sur 13"
-          onChange={() => undefined}
-        />
+        {totalPages > 1 && (
+          <Pagination
+            page={list.page + 1}
+            pageCount={totalPages}
+            summary={`${formatNumber(totalElements)} prêches · page ${list.page + 1} sur ${totalPages}`}
+            onChange={(p) => list.setPage(p - 1)}
+          />
+        )}
       </PageBody>
     </>
   )

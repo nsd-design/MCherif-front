@@ -34,7 +34,7 @@ export function TopBar({
         />
       )}
       {actions}
-      {showAvatar && <Avatar initials={admin?.initials ?? 'AD'} size={34} />}
+      {showAvatar && <Avatar initials={admin?.initials ?? fr.auth.fallbackInitials} size={34} />}
     </header>
   )
 }

@@ -29,11 +29,15 @@ export const fr = {
     codeTitle: 'Vérification en deux étapes',
     codeSubtitle: 'Saisissez le code à 6 chiffres envoyé à votre e-mail',
     code: 'Code de vérification',
+    codeHint: 'Le code expire au bout de 10 minutes.',
     verify: 'Vérifier',
     back: 'Retour',
     resend: 'Renvoyer le code',
-    errorCredentials: 'Identifiants invalides.',
-    errorCode: 'Code invalide. Réessayez.',
+    /** Replis quand le profil admin n'a pas pu être résolu (pas d'endpoint /me). */
+    fallbackName: 'Administrateur',
+    fallbackInitials: 'AD',
+    // Les messages d'échec d'auth vivent dans i18n/errors.ts, indexés sur le
+    // `code` du ProblemDetail (invalid-credentials, invalid-code, rate-limited).
   },
   common: {
     search: 'Recherche globale…',
@@ -47,6 +51,8 @@ export const fr = {
     edit: 'Éditer',
     delete: 'Supprimer',
     close: 'Fermer',
+    showPassword: 'Afficher le mot de passe',
+    hidePassword: 'Masquer le mot de passe',
     free: 'Gratuit',
     premium: 'Premium',
     all: 'Tous',

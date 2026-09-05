@@ -39,3 +39,10 @@
   color: var(--text-faint);
   cursor: pointer;
 }
+
+.empty {
+  padding: var(--sp-8);
+  text-align: center;
+  font-size: var(--fs-cell);
+  color: var(--text-muted);
+}

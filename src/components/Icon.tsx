@@ -25,6 +25,8 @@ export type IconName =
   | 'sun'
   | 'moon'
   | 'download'
+  | 'eye'
+  | 'eyeOff'
 
 const PATHS: Record<IconName, string> = {
   dashboard: 'M3 3h7v7H3zM14 3h7v7h-7zM3 14h7v7H3zM14 14h7v7h-7z',
@@ -52,6 +54,9 @@ const PATHS: Record<IconName, string> = {
   sun: 'M12 3v2M12 19v2M5 5l1.5 1.5M17.5 17.5L19 19M3 12h2M19 12h2M5 19l1.5-1.5M17.5 6.5L19 5',
   moon: 'M21 12.8A9 9 0 1111.2 3a7 7 0 009.8 9.8z',
   download: 'M12 3v12m0 0l-4-4m4 4l4-4M5 21h14',
+  eye: 'M1 12s4-7 11-7 11 7 11 7-4 7-11 7-11-7-11-7z',
+  eyeOff:
+    'M17.94 17.94A10.07 10.07 0 0112 20c-7 0-11-8-11-8a18.45 18.45 0 015.06-5.94M9.9 4.24A9.12 9.12 0 0112 4c7 0 11 8 11 8a18.5 18.5 0 01-2.16 3.19m-6.72-1.07a3 3 0 11-4.24-4.24',
 }
 
 interface IconProps {
@@ -116,6 +121,44 @@ export function Icon({ name, size = 18, strokeWidth = 2, className }: IconProps)
       >
         <rect x="5" y="11" width="14" height="10" rx="2" />
         <path d={PATHS.lock} />
+      </svg>
+    )
+  }
+  if (name === 'eye') {
+    return (
+      <svg
+        width={size}
+        height={size}
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        strokeWidth={strokeWidth}
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        className={className}
+        aria-hidden="true"
+      >
+        <path d={PATHS.eye} />
+        <circle cx="12" cy="12" r="3" />
+      </svg>
+    )
+  }
+  if (name === 'eyeOff') {
+    return (
+      <svg
+        width={size}
+        height={size}
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        strokeWidth={strokeWidth}
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        className={className}
+        aria-hidden="true"
+      >
+        <path d={PATHS.eyeOff} />
+        <path d="M1 1l22 22" />
       </svg>
     )
   }

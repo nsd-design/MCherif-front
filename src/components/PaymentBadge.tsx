@@ -1,25 +1,24 @@
 import styles from './PaymentBadge.module.css'
 import { paymentColors } from '../theme/tokens'
-import type { PaymentMethod } from '../types'
+import { paymentMethodLabel } from '../i18n/enums'
+import type { PaymentMethod } from '../api/types'
 
-const META: Record<PaymentMethod, { label: string; sigle: string; color: { bg: string; fg: string } }> = {
-  orange: { label: 'Orange Money', sigle: 'OM', color: paymentColors.orange },
-  mtn: { label: 'MTN MoMo', sigle: 'Mo', color: paymentColors.mtn },
-  card: { label: 'Carte bancaire', sigle: 'CB', color: paymentColors.card },
+const SIGLE: Record<PaymentMethod, string> = {
+  ORANGE_MONEY: 'OM',
+  MTN_MOMO: 'Mo',
+  YMONEY: 'YM',
+  CARD: 'CB',
 }
 
 /** Pastille colorée du moyen de paiement + libellé. */
 export function PaymentBadge({ method }: { method: PaymentMethod }) {
-  const { label, sigle, color } = META[method]
+  const color = paymentColors[method]
   return (
     <span className={styles.wrap}>
-      <span
-        className={styles.chip}
-        style={{ background: color.bg, color: color.fg }}
-      >
-        {sigle}
+      <span className={styles.chip} style={{ background: color.bg, color: color.fg }}>
+        {SIGLE[method]}
       </span>
-      <span className={styles.label}>{label}</span>
+      <span className={styles.label}>{paymentMethodLabel(method)}</span>
     </span>
   )
 }

@@ -3,6 +3,7 @@ import styles from './Sidebar.module.css'
 import { Icon, type IconName } from './Icon'
 import { Avatar } from './Avatar'
 import { fr } from '../i18n/fr'
+import { adminRoleLabel } from '../i18n/enums'
 import { useAuthStore } from '../store/auth'
 
 interface NavItem {
@@ -57,10 +58,10 @@ export function Sidebar() {
 
       <div className={styles.footer}>
         <div className={styles.profile}>
-          <Avatar initials={admin?.initials ?? 'AD'} size={34} />
+          <Avatar initials={admin?.initials ?? fr.auth.fallbackInitials} size={34} />
           <div className={styles.profileInfo}>
-            <div className={styles.profileName}>{admin?.fullName ?? 'Administrateur'}</div>
-            <div className={styles.profileRole}>Super administrateur</div>
+            <div className={styles.profileName}>{admin?.fullName ?? fr.auth.fallbackName}</div>
+            <div className={styles.profileRole}>{adminRoleLabel(admin?.role)}</div>
           </div>
         </div>
         <button className={styles.logout} onClick={logout}>
