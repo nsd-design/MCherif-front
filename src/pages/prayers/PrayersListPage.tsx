@@ -155,7 +155,7 @@ export function PrayersListPage() {
       {
         id: 'actions',
         header: () => 'Action',
-        size: 90,
+        size: 110,
         cell: ({ row }) => (
           <span className={styles.actions}>
             <button
