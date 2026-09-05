@@ -27,10 +27,6 @@
   white-space: nowrap;
 }
 
-.muted {
-  color: var(--text-muted);
-}
-
 .devices {
   font-weight: var(--fw-bold);
   color: var(--text);

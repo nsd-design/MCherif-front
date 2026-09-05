@@ -9,6 +9,7 @@ import { DataTable } from '../../components/DataTable'
 import { Pagination } from '../../components/Pagination'
 import { Avatar } from '../../components/Avatar'
 import { SubscriptionBadge } from '../../components/StatusBadge'
+import { textColumn, dateColumn, badgeColumn } from '../../components/columns'
 import { SkeletonRows } from '../../components/Skeleton'
 import { ErrorState } from '../../components/ErrorState'
 import { Card } from '../../components/Card'
@@ -16,7 +17,7 @@ import { UserDrawer } from './UserDrawer'
 import { useUsers, type UserFilters } from '../../api/users'
 import { pageView, usePagedResource } from '../../lib/usePagedResource'
 import { initials } from '../../lib/initials'
-import { formatDateShort, formatNumber } from '../../lib/format'
+import { formatNumber } from '../../lib/format'
 import { fr } from '../../i18n/fr'
 import type { SubscriptionStatus, UserListItem } from '../../api/types'
 
@@ -62,45 +63,33 @@ export function UsersPage() {
           </span>
         ),
       },
-      {
-        accessorKey: 'phone',
-        header: () => 'Téléphone',
+      textColumn<UserListItem>({
+        id: 'phone',
+        header: 'Téléphone',
         size: 160,
         enableSorting: true,
-        cell: ({ row }) => <span className={styles.muted}>{row.original.phone}</span>,
-      },
-      {
-        accessorKey: 'registeredAt',
+        accessor: (row) => row.phone,
+      }),
+      dateColumn<UserListItem>({
         id: 'createdAt',
-        header: () => 'Inscription',
+        header: 'Inscription',
         size: 130,
         enableSorting: true,
-        cell: ({ row }) => (
-          <span className={styles.muted}>
-            {row.original.registeredAt ? formatDateShort(row.original.registeredAt) : '—'}
-          </span>
-        ),
-      },
-      {
-        accessorKey: 'subscriptionStatus',
-        header: () => 'Abonnement',
+        accessor: (row) => row.registeredAt,
+      }),
+      badgeColumn<UserListItem, SubscriptionStatus | null>({
+        id: 'subscriptionStatus',
+        header: 'Abonnement',
         size: 150,
-        cell: ({ row }) => (
-          <SubscriptionBadge
-            status={(row.original.subscriptionStatus as SubscriptionStatus | null) ?? null}
-          />
-        ),
-      },
-      {
-        accessorKey: 'expiresAt',
-        header: () => 'Échéance',
+        accessor: (row) => (row.subscriptionStatus as SubscriptionStatus | null) ?? null,
+        render: (status) => <SubscriptionBadge status={status} />,
+      }),
+      dateColumn<UserListItem>({
+        id: 'expiresAt',
+        header: 'Échéance',
         size: 130,
-        cell: ({ row }) => (
-          <span className={styles.muted}>
-            {row.original.expiresAt ? formatDateShort(row.original.expiresAt) : '—'}
-          </span>
-        ),
-      },
+        accessor: (row) => row.expiresAt,
+      }),
       {
         accessorKey: 'deviceCount',
         header: () => 'Appareils',

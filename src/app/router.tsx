@@ -13,6 +13,7 @@ import { PaymentsPage } from '../pages/payments/PaymentsPage'
 import { NotificationsPage } from '../pages/notifications/NotificationsPage'
 import { SettingsPage } from '../pages/settings/SettingsPage'
 import { ForbiddenPage } from '../pages/errors/ForbiddenPage'
+import { NotFoundPage } from '../pages/errors/NotFoundPage'
 
 export const router = createBrowserRouter([
   {
@@ -42,5 +43,5 @@ export const router = createBrowserRouter([
       },
     ],
   },
-  { path: '*', element: <Navigate to="/tableau-de-bord" replace /> },
+  { path: '*', element: <NotFoundPage /> },
 ])

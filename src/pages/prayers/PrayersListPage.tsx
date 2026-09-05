@@ -11,12 +11,13 @@ import { Pagination } from '../../components/Pagination'
 import { Button } from '../../components/Button'
 import { Icon } from '../../components/Icon'
 import { PrayerStatusBadge, AccessBadge } from '../../components/StatusBadge'
+import { textColumn, dateColumn, badgeColumn } from '../../components/columns'
 import { SkeletonRows } from '../../components/Skeleton'
 import { ErrorState } from '../../components/ErrorState'
 import { Card } from '../../components/Card'
 import { usePrayers, type PrayerFilters } from '../../api/prayers'
 import { pageView, usePagedResource } from '../../lib/usePagedResource'
-import { formatDateShort, formatDuration, formatNumber } from '../../lib/format'
+import { formatDuration, formatNumber } from '../../lib/format'
 import { fr } from '../../i18n/fr'
 import type { PrayerListItem } from '../../api/types'
 
@@ -81,49 +82,44 @@ export function PrayersListPage() {
         enableSorting: true,
         cell: ({ row }) => <span className={styles.title}>{row.original.title}</span>,
       },
-      {
-        accessorKey: 'theme',
-        header: () => 'Thème',
+      textColumn<PrayerListItem>({
+        id: 'theme',
+        header: 'Thème',
         size: 110,
         enableSorting: true,
-        cell: ({ row }) => <span className={styles.muted}>{row.original.theme ?? '—'}</span>,
-      },
-      {
-        accessorKey: 'recordedOn',
-        header: () => 'Date',
+        accessor: (row) => row.theme,
+      }),
+      dateColumn<PrayerListItem>({
+        id: 'recordedOn',
+        header: 'Date',
         size: 130,
         enableSorting: true,
-        cell: ({ row }) => (
-          <span className={styles.muted}>
-            {row.original.recordedOn ? formatDateShort(row.original.recordedOn) : '—'}
-          </span>
-        ),
-      },
-      {
-        accessorKey: 'durationSec',
-        header: () => 'Durée',
+        accessor: (row) => row.recordedOn,
+      }),
+      textColumn<PrayerListItem, number>({
+        id: 'durationSec',
+        header: 'Durée',
         size: 90,
         enableSorting: true,
-        cell: ({ row }) => (
-          <span className={styles.muted}>{formatDuration(row.original.durationSec ?? 0)}</span>
-        ),
-      },
-      {
-        accessorKey: 'status',
-        header: () => 'Statut',
+        accessor: (row) => row.durationSec ?? 0,
+        format: formatDuration,
+      }),
+      badgeColumn<PrayerListItem, PrayerListItem['status']>({
+        id: 'status',
+        header: 'Statut',
         size: 130,
         enableSorting: true,
-        cell: ({ row }) =>
-          row.original.status ? <PrayerStatusBadge status={row.original.status} /> : null,
-      },
-      {
-        accessorKey: 'access',
-        header: () => 'Accès',
+        accessor: (row) => row.status,
+        render: (status) => (status ? <PrayerStatusBadge status={status} /> : null),
+      }),
+      badgeColumn<PrayerListItem, PrayerListItem['access']>({
+        id: 'access',
+        header: 'Accès',
         size: 100,
         enableSorting: true,
-        cell: ({ row }) =>
-          row.original.access ? <AccessBadge access={row.original.access} /> : null,
-      },
+        accessor: (row) => row.access,
+        render: (access) => (access ? <AccessBadge access={access} /> : null),
+      }),
       {
         accessorKey: 'playCount',
         header: () => 'Écoutes',

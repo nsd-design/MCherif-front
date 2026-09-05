@@ -47,9 +47,6 @@
   color: var(--text-muted);
 }
 
-.muted {
-  color: var(--text-muted);
-}
 
 .phone {
   font-weight: var(--fw-bold);

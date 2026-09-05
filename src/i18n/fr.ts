@@ -1,7 +1,7 @@
 /*
  * Chaînes visibles en français. Interface 100 % FR, ton sobre, sans emoji.
- * Regroupées par domaine ; les libellés de données de démonstration restent
- * dans api/mock/data.ts.
+ * Regroupées par domaine — transverse seulement (nav, auth, common, status) ;
+ * les libellés propres à une page sont des littéraux FR en ligne dans le .tsx.
  */
 export const fr = {
   app: {
@@ -40,7 +40,6 @@ export const fr = {
     // `code` du ProblemDetail (invalid-credentials, invalid-code, rate-limited).
   },
   common: {
-    search: 'Recherche globale…',
     loading: 'Chargement…',
     empty: 'Aucun élément à afficher',
     error: 'Une erreur est survenue',
@@ -48,8 +47,6 @@ export const fr = {
     save: 'Enregistrer',
     cancel: 'Annuler',
     confirm: 'Confirmer',
-    edit: 'Éditer',
-    delete: 'Supprimer',
     close: 'Fermer',
     showPassword: 'Afficher le mot de passe',
     hidePassword: 'Masquer le mot de passe',

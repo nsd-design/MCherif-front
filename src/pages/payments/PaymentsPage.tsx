@@ -11,31 +11,17 @@ import { DataTable } from '../../components/DataTable'
 import { Pagination } from '../../components/Pagination'
 import { PaymentBadge } from '../../components/PaymentBadge'
 import { TransactionBadge } from '../../components/StatusBadge'
+import { textColumn, dateColumn, badgeColumn } from '../../components/columns'
 import { SkeletonRows } from '../../components/Skeleton'
 import { ErrorState } from '../../components/ErrorState'
 import { exportPaymentsCsv, usePayments, useSubscriptionStats } from '../../api/payments'
 import { toast } from '../../store/toast'
 import { errorMessage } from '../../i18n/errors'
 import { planCodeLabel } from '../../i18n/enums'
-import { changeText, formatDateShort, formatGnf, formatNumber } from '../../lib/format'
+import { changeText, formatGnf, formatNumber } from '../../lib/format'
 import { pageView, usePagedResource } from '../../lib/usePagedResource'
+import { periodFrom, type Period } from './periodFrom'
 import type { PaymentListItem, PaymentMethod, PaymentStatus } from '../../api/types'
-
-type Period = '30' | '90' | '365' | 'all'
-
-/*
- * Borne basse du filtre de période, TRONQUÉE À LA JOURNÉE.
- * La précision milliseconde n'a aucun sens pour un filtre « 30 derniers jours »
- * et rendait la valeur différente à chaque rendu : la `queryKey` changeait sans
- * cesse et la page bouclait sur `GET /admin/payments` sans jamais s'afficher.
- */
-function periodFrom(period: Period): string | undefined {
-  if (period === 'all') return undefined
-  const d = new Date()
-  d.setDate(d.getDate() - Number(period))
-  d.setHours(0, 0, 0, 0)
-  return d.toISOString()
-}
 
 const PAGE_SIZE = 20
 
@@ -75,36 +61,34 @@ export function PaymentsPage() {
 
   const columns = useMemo<ColumnDef<PaymentListItem, unknown>[]>(
     () => [
-      {
-        accessorKey: 'date',
+      dateColumn<PaymentListItem>({
         id: 'createdAt',
-        header: () => 'Date',
+        header: 'Date',
         size: 110,
         enableSorting: true,
-        cell: ({ row }) => (
-          <span className={styles.muted}>{row.original.date ? formatDateShort(row.original.date) : '—'}</span>
-        ),
-      },
+        accessor: (row) => row.date,
+      }),
       {
         accessorKey: 'userPhone',
         header: () => 'Utilisateur',
         cell: ({ row }) => <span className={styles.phone}>{row.original.userPhone}</span>,
       },
-      {
-        accessorKey: 'plan',
+      textColumn<PaymentListItem>({
         id: 'planCode',
-        header: () => 'Plan',
+        header: 'Plan',
         size: 90,
         enableSorting: true,
-        cell: ({ row }) => <span className={styles.muted}>{planCodeLabel(row.original.plan)}</span>,
-      },
-      {
-        accessorKey: 'method',
-        header: () => 'Moyen',
+        accessor: (row) => row.plan,
+        format: planCodeLabel,
+      }),
+      badgeColumn<PaymentListItem, PaymentListItem['method']>({
+        id: 'method',
+        header: 'Moyen',
         size: 180,
         enableSorting: true,
-        cell: ({ row }) => (row.original.method ? <PaymentBadge method={row.original.method} /> : null),
-      },
+        accessor: (row) => row.method,
+        render: (method) => (method ? <PaymentBadge method={method} /> : null),
+      }),
       {
         accessorKey: 'amountGnf',
         header: () => 'Montant',
@@ -112,13 +96,14 @@ export function PaymentsPage() {
         enableSorting: true,
         cell: ({ row }) => <span className={styles.amount}>{formatGnf(row.original.amountGnf ?? 0)}</span>,
       },
-      {
-        accessorKey: 'status',
-        header: () => 'Statut',
+      badgeColumn<PaymentListItem, PaymentListItem['status']>({
+        id: 'status',
+        header: 'Statut',
         size: 110,
         enableSorting: true,
-        cell: ({ row }) => (row.original.status ? <TransactionBadge status={row.original.status} /> : null),
-      },
+        accessor: (row) => row.status,
+        render: (status) => (status ? <TransactionBadge status={status} /> : null),
+      }),
       {
         accessorKey: 'reference',
         header: () => 'Référence',

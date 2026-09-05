@@ -4,7 +4,7 @@
  */
 import { useQuery } from '@tanstack/react-query'
 import { api, unwrap } from './http'
-import type { EncodingState } from './types'
+import type { EncodingJobItem, EncodingState } from './types'
 
 export const dashboardKeys = {
   /** Préfixe commun : `invalidateQueries({ queryKey: dashboardKeys.all })`
@@ -52,6 +52,16 @@ const TERMINAL_STATES: readonly EncodingState[] = ['READY', 'FAILED']
  * Il redémarre à l'invalidation de `dashboardKeys.all` — déclenchée après un
  * téléversement ou une publication, moments où un job apparaît.
  */
+/** Extraite pour être testable isolément (sans QueryClient ni réseau). */
+export function encodingJobsRefetchInterval(query: {
+  state: { data: EncodingJobItem[] | undefined }
+}): number | false {
+  const jobs = query.state.data
+  if (!jobs || jobs.length === 0) return false
+  const allDone = jobs.every((j) => j.state != null && TERMINAL_STATES.includes(j.state))
+  return allDone ? false : 5000
+}
+
 export function useEncodingJobs(state?: EncodingState) {
   return useQuery({
     queryKey: [...dashboardKeys.encodingJobs, state ?? null],
@@ -61,11 +71,6 @@ export function useEncodingJobs(state?: EncodingState) {
           params: { query: { state } },
         }),
       ),
-    refetchInterval: (query) => {
-      const jobs = query.state.data
-      if (!jobs || jobs.length === 0) return false
-      const allDone = jobs.every((j) => j.state != null && TERMINAL_STATES.includes(j.state))
-      return allDone ? false : 5000
-    },
+    refetchInterval: encodingJobsRefetchInterval,
   })
 }

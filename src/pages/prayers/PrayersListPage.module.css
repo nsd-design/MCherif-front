@@ -29,10 +29,6 @@
   color: var(--text);
 }
 
-.muted {
-  color: var(--text-muted);
-}
-
 .plays {
   font-weight: var(--fw-bold);
   color: var(--text);
